@@ -77,7 +77,6 @@ class Admin_QuizController extends Core_Admin{
 				}
 			}
 			
-			
 			// set other params
 			$insert['title'] = $p['title'];
 			$insert['description'] = $p['description'];
@@ -124,6 +123,15 @@ class Admin_QuizController extends Core_Admin{
 					$time = time();
 					if(Model_Custom_File::upload($_FILES['image'],DOC_ROOT.'/uploads/',$time)){
 						$insert['image'] = $time.'_'.$_FILES['image']['name'];
+					}
+				}
+				
+				// only upload if provided
+				if($_FILES['audio']['tmp_name']){
+					// time to use as unique
+					$time = time();
+					if(Model_Custom_File::upload($_FILES['audio'],DOC_ROOT.'/uploads/',$time)){
+						$insert['audio'] = $time.'_'.$_FILES['audio']['name'];
 					}
 				}
 				
