@@ -1,0 +1,11 @@
+<div class='span12 '>
+	<div class='alert alert-danger'>Column MUST be same as original XLS. File name must be items.csv in /res directory. It will not delete any old data.</div>
+	<div class='alert alert-danger'>Export CSV file using Google Drive Menu > Export > CSV.</div>
+	<a class='btn btn-primary' href='<?=HTTP.WWW_ROOT?>/admin/items/import'>Import CSV Now</a>
+	<h3 claaa='text text-info'>Note last Item ID in case of error <?=$this->item->id?></h3>
+<br>
+<br>
+<br>
+<a class='btn btn-danger' href='<?=HTTP.WWW_ROOT?>/admin/items/delete-all'>Delete All Items. Careful, all Meal Plans become empty</a>
+	
+</div>

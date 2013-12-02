@@ -1,0 +1,60 @@
+<div class='span12 well'>
+<a href='<?=HTTP.WWW_ROOT?>/admin/quiz/add' class='btn btn-primary pull-right'><i class='icon icon-white icon-plus'></i> Add A Quiz </a>
+<h4>Quiz</h4>
+<small class='muted'>Total <?=$this->total?> questions.</small>
+<small class='text text-error'>Question which does NOT have answers yet will not be added to quiz for users.</small>
+<hr>
+<div class='row-fluid'>
+	<div class='span12'>
+	</div>
+</div>
+
+<table class='table table-striped table-bordered'>
+	<tbody >
+		<th style='background-color:#ededed' >
+			Question Type
+		</th>
+		<th style='background-color:#ededed' >
+			Title
+		</th>
+		<th style='background-color:#ededed'>
+			Description
+		</th>
+		<th style='background-color:#ededed'>
+			Action
+		</th>
+		
+	</tbody>
+		<?php
+		
+		foreach($this->paginator as $key=>$value){
+			$type = $value->data_type;
+			
+			if(!$type)
+				$type = '...';
+				
+			echo "
+			<tr>
+				<td>
+					{$type}
+				</td>
+				<td>
+					{$value->title}
+				</td>
+				<td>
+					{$value->description}
+				</td>
+				<td class='span3'>
+					
+					<a class='btn' href='".HTTP.WWW_ROOT."/admin/quiz/edit/id/".$value->id."' ><i class='icon-edit'></i></a>
+					<a class='btn' href='".HTTP.WWW_ROOT."/admin/quiz/delete-confirm/id/".$value->id."' ><i class='icon-remove'></i></a>
+					
+				</td>
+				
+			</tr>";
+		
+		}
+		?>
+		
+</table>
+</div>

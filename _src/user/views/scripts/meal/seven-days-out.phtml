@@ -1,0 +1,49 @@
+<div class='row-fluid'>
+	<div class='span12'>
+		<div class='span9'>
+			<div class="btn-group" data-toggle="buttons-checkbox">
+				<a class="btn disabled">Day </a>
+				<a class="btn <?=$this->d1?> btn-info" href='<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out/d/1'>1</a>
+				<a class="btn <?=$this->d2?> btn-info" href='<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out/d/2'>2</a>
+				<a class="btn <?=$this->d3?> btn-info" href='<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out/d/3'>3</a>
+				<a class="btn <?=$this->d4?> btn-info" href='<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out/d/4'>4</a>
+				<a class="btn <?=$this->d5?> btn-info" href='<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out/d/5'>5</a>
+				<a class="btn <?=$this->d6?> btn-info" href='<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out/d/6'>6</a>
+				<a class="btn <?=$this->d7?> btn-info" href='<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out/d/7'>7</a>
+			</div>		
+			<?php
+			if($this->data){
+			?>
+			<div class='row-fluid'>
+				<hr>
+				<table class='small table table-stripped table-condensed table-hover table-bordered'>
+					<Tr class='alert alert-info'>
+						<th>Water</th>
+						<th>Carbs</th>
+						<th>Protein</th>
+						<th>Fat</th>
+					</tr>
+					<Tr  class='bold '>
+						<td><h3><?=$this->data['water']?> oz</h3></td>
+						<td><h3><?=$this->data['carbs']?> g</h3></td>
+						<td><h3><?=$this->data['protein']?> g</h3></td>
+						<td><h3><?=$this->data['fat']?> g</h3></td>
+					</tr>
+				</table>
+				<br>
+				<div class='alert alert-success'>
+									
+				  <?=$this->content;?>
+				  
+				</div>
+			</div>
+			<?php
+			}
+			?>
+		</div>
+		<div class='span3'>
+			
+		</div>
+	</div>
+
+</div>

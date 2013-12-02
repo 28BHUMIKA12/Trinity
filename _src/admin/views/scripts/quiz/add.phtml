@@ -1,0 +1,55 @@
+<div class='span1'>
+</div>
+           
+<div class='span10 white-panel'>
+	<div class='row-fluid'>
+	
+		<?php
+		if($this->err){
+			echo "<div class='alert alert-error'>{$this->err}</div>";
+		}
+		if($this->msg){
+			echo "<div class='alert alert-success'>{$this->msg}</div>";
+		}
+		?>
+		<div class='row-fluid'>
+			<div class='span12 '>
+				<form  method='post'  action='' enctype='multipart/form-data'>		
+				<div class='span12'>
+					<h3>
+						Add A Question.
+					</h3>
+						<p><input type="text" name='title' required class='span10'  placeholder="Question Title, this is optional"  ></p>
+						<p><input type="text" name='description' class='span10'  placeholder="Question description, this is optional" ></p>
+						<div class='alert alert-danger'>Please add any ONE of below - either Image, Video or Audio. Please remove any spaces OR special names from the file names.</div>
+						<br>
+						Image, if any:
+						<p>
+							<input type='file' name='image'>
+						</p>
+						Vimeo Video URL, if any (<span class='text text-error'>e.g. http://player.vimeo.com/video/25451551</span>) 
+						<p>
+							<input type='text' class='span6' name='video' placeholder="Paste Vimeo video URL here">
+						</p>
+						
+						Audio File, if any (only .wav files are supported) 
+						<p>
+							<input type='file' name='audio'>
+						</p>
+						
+						<br>
+						
+						<button type="submit" class="btn btn-primary"> Submit </button>
+								
+				</div>
+				
+				</form>
+			
+			</div>		
+		</div>
+	</div>
+
+</div>
+<div class='span1'>
+</div>
+

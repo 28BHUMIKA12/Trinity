@@ -1,0 +1,40 @@
+<h4>Edit Flight '<?=$this->FlightData->name?>'
+<a class='btn btn-mini' href='<?=HTTP.WWW_ROOT?>/admin/flight/list'><i class='icon icon-list '></i></a>
+</h4>
+<?php
+	if($this->err){
+		echo "<div class='alert alert-error'>{$this->err}</div>";
+	}
+	if($this->msg){
+		echo "<div class='alert alert-success'>{$this->msg}</div>";
+	}
+?>
+<br>
+<form  method='post' action='' enctype="multipart/form-data" class='well'>		
+	<div>
+		<div class="control-group">
+			<div class="controls input-append">
+				<input type="text" required id="name" name='name' class='input-xlarge' value='<?=$this->FlightData->name?>'>
+				<span class="add-on"> … required</span>
+			</div>
+		</div>	
+		<div class="control-group">
+			<div class="controls input-append">
+				<textarea  id="description" name='description' class='input-xlarge' ><?=$this->FlightData->description?></textarea>
+				<span class="add-on"> … optional</span>
+			</div>
+		</div>	
+		<div class="control-group">
+			<div class="controls input-append">
+				<input type="text" required id="vimeo_url" name='vimeo_url' class='input-xlarge' value='<?=$this->FlightData->vimeo_url?>'>
+				<span class="add-on"> e.g. http://player.vimeo.com/video/55655440</span>
+			</div>
+		</div>	
+	</div>
+	<div class='row-fluid'></div>
+	<div class="form-actions">
+	    <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    
+</form>
+

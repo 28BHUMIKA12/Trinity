@@ -1,0 +1,20 @@
+<h3>
+Score Card - <?=$this->trainee->first_name?>
+<?=$this->trainee->last_name?>
+</h3>
+<hr>
+
+<?php
+if(count($this->score)){
+	// for each score
+		foreach($this->score as $key=>$value){
+			// mark correct incorrect
+			if($value->is_correct)
+				$correct_total ++;
+			else
+				$incorrect_total ++;
+				
+		}
+		echo "<div class='text text-info'><h3>User have {$correct_total} correct and {$incorrect_total} incorrect response(s).</h3> [As soon as user start a new Quiz, this score will be deleted.]</div>";
+}
+?>

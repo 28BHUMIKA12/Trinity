@@ -1,0 +1,739 @@
+<?php
+	$user = $this->user->doRead($this->auth->id);
+	$targets = $this->user_required->getTargets($this->auth->id);
+
+?>
+<div class='span9'>
+          
+	<?php
+	
+	if($this->auth->fitness_tip_by_trainer){
+	?>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<div class='alert alert-success'><i class='icon icon-hand-right'></i> <?=$this->auth->fitness_tip_by_trainer?></div>
+		</div>
+	</div>
+	<?php
+	}
+	else{
+	?>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<div class='alert'>No specific Fitness Tips from your Trainer today.</div>
+		</div>
+	</div>
+	
+	<?php
+	
+	}
+	?>
+	
+	<form class="form" action="<?=HTTP.WWW_ROOT?>/user/meal/plan/" method='post' style='padding:0px;margin:0px'>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<!-- <?php
+			$eat_grocery = $eat_restaurant = $eat_cookbook = '';
+			if($this->t == Model_DbTable_Item::GROCERY){
+				$eat_grocery = 'active';
+			}
+			if($this->t == Model_DbTable_Item::RESTAURANT){
+				$eat_restaurant = 'active';
+			}
+			if($this->t == Model_DbTable_Item::COOKBOOK){
+				$eat_cookbook = 'active';
+			}
+			?>
+			<div class='span2'>
+			    <div class="btn-group">
+				    <button class="btn btn-danger"><?=$this->t?></button>
+				    <button class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+					    <span class="caret"></span>
+				    </button>
+				    <ul class="dropdown-menu">
+				    	<li><a class='<?=$eat_grocery?>' href='<?=HTTP.WWW_ROOT?>/user/meal/plan/t/<?=Model_DbTable_Item::GROCERY?>'><?=Model_DbTable_Item::GROCERY?></a></li>
+						<li><a class='<?=$eat_restaurant?>' href='<?=HTTP.WWW_ROOT?>/user/meal/plan/t/<?=Model_DbTable_Item::RESTAURANT?>'><?=Model_DbTable_Item::RESTAURANT?></a></li>
+						<li><a class='<?=$eat_cookbook?>' href='<?=HTTP.WWW_ROOT?>/user/meal/plan/t/<?=Model_DbTable_Item::COOKBOOK?>'><?=Model_DbTable_Item::COOKBOOK?></a></li>
+					
+				    </ul>
+			    </div>
+			</div>
+			-->
+			<div class='span8'>
+				<div class='row-fluid'>
+					<div class='span12'>
+						<div class='span3'>
+							<select  class='span12' name='code'>
+								<?php
+								foreach($this->user_meal_plans as $key_p=>$value_p){
+									$selected = '';
+									if($this->c == $value_p->code){
+										$selected = 'selected';
+									}
+									echo "<option {$selected} value='".$value_p->code."'>".$value_p->name."</option>";
+								}
+								?>							
+							</select>
+						</div>
+						<div class='span3'>
+							<?php
+							$am1 = $am1 = $am3 = $am4 = '';
+							if($this->after_meal == '2'){
+								$am1 = 'selected';
+							}
+							if($this->after_meal == '3'){
+								$am2 = 'selected';
+							}
+							if($this->after_meal == '4'){
+								$am3 = 'selected';
+							}
+							if($this->after_meal == '5'){
+								$am4 = 'selected';
+							}
+							?>
+							<select  class='span12' name='after_meal' >
+								<option value=''>Day Off</option>
+								<option <?=$am1?> value='2'>After Meal 1</option>
+								<option <?=$am2?> value='3'>After Meal 2</option>
+								<option <?=$am3?> value='4'>After Meal 3</option>
+								<option <?=$am4?> value='5'>After Meal 4</option>
+							</select>
+						</div>
+						<div class='span4'>
+							<div class="btn-group" data-toggle="buttons-checkbox">
+								<button class="btn btn-primary" type="submit">Go!</button>
+								<button type='submit' name='delete' class="btn  btn-danger">Delete</button>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='span4'>
+				<div class="btn-group pull-right" data-toggle="buttons-checkbox">
+					<a href='' data-content="<form action='<?=HTTP.WWW_ROOT?>/user/meal/regenerate' method='post'>
+						<input name='re_code' type='hidden' value='<?=$this->c?>'>
+						<p>Are you sure you want to regenerate this meal plan?</p>
+						<button type='submit' class='btn pull-right btn-mini btn-primary'>Submit</button>
+						</form>" class='meal_add_popover btn' data-title='Re-generate Meal' data-toggle='modal'  role='button' ><i class='icon icon-refresh'></i></a>
+					<a  target="_blank" href='<?=HTTP.WWW_ROOT?>/user/meal/print/after_meal/<?=$this->after_meal?>/c/<?=$this->user_meal_data->code?>' class="btn"><i class='icon icon-print'></i></a>
+					
+					<a href='' data-content="<form action='<?=HTTP.WWW_ROOT?>/user/meal/step-1' method='post'>
+						<input name='name' value='Untitled' id='create_name' required type='text' class='input-medium input-mini' placeholder='Plan name'><button type='submit' id='create_name_submit' class='btn pull-right btn-mini btn-primary'>Go</button><label  class='checkbox muted small'><input type='checkbox' name='auto_fill' value='1'> Autofill this Plan<label>
+						</form>" class='meal_add_popover btn btn-primary' data-title='Create Meal Plan' data-toggle='modal' role='button' >Create</a>
+						
+					<a href='#' data-content="<form action='<?=HTTP.WWW_ROOT?>/user/meal/progress-chart' method='post'>
+						<input name='weight_lbs' type='text' value='<?=$user->weight_lbs?>'  class='input-medium input-mini' placeholder='weight in lbs'><button type='submit' class='btn pull-right btn-mini btn-primary'>Go</button>
+						</form>" class='btn btn-info progress_chart_popover' data-title='Enter Your Current Weight in lbs' data-toggle='modal' role='button'><i class='icon icon-signal icon-white'></i> Export</a>
+					
+				</div>	
+			</div>
+		</div>	
+	</div>
+	</form>
+
+	<?php
+	
+	foreach($this->meal_master as $key_m=>$value_m){
+		
+		$select = $this->user_required->select();
+		$select->where("user_id=?",$this->auth->id);
+		$select->where("meal_id=?",$value_m->id);
+		$required = $this->user_required->fetchRow($select);
+		
+		$get_meal_name = $value_m->name;
+		$get_meal_id = $value_m->id;
+		
+		if($this->after_meal == $get_meal_id){
+			$get_meal_name = "Meal {$value_m->id} (Post Workout)";
+			$get_meal_id = 7;
+		}
+		$plan = $this->user_meal_items->fetchAll(
+			"user_meal_id='".$this->user_meal_data->id."' and 
+			meal_id='".$get_meal_id."'");
+		
+		$subTotal = array();
+		foreach($plan as $key_sub=>$value_sub){
+	
+			$item_stats 			= $this->item_stats->doRead($value_sub->item_stats_id);
+			$subTotal['cals'] 		+= $item_stats->calories;
+			$subTotal['protein'] 	+= $item_stats->protein;
+			$subTotal['fat'] 		+= $item_stats->fat;
+			$subTotal['carbs'] 		+= $item_stats->carbs;
+			$subTotal['fiber'] 		+= $item_stats->fiber;
+		}		
+	?>
+	<div class='row-fluid'>
+		<table class='table table-stripped table-condensed pad1 table-hover table-bordered'>
+			<tbody>
+				<tr class="error bold small" >
+					<td width="25%"><?=$user->body_type?></td>
+					<td colspan="3">Total Req.</th>
+					<td><?=$required->cal?> Cal</td>
+					<td><?=$required->protein?> g</td>
+					<td><?=$required->fat?> g</td>
+					<td><?=$required->carbs?> g</td>
+					<td> g</td>
+					<td></td>
+				</tr>
+				<tr class="success small">
+					<td><?=$get_meal_name?></td>
+					<td>Serving</td>
+					<td></td>
+					<td></td>
+					<td><?=round($subTotal['cals'],2)?></td>
+					<td><?=round($subTotal['protein'],2)?></td>
+					<td><?=round($subTotal['fat'],2)?></td>
+					<td><?=round($subTotal['carbs'],2)?></td>
+					<td><?=round($subTotal['fiber'],2)?></td>
+					<td ></td>
+				</tr>
+				<tr class="muted small">
+					<td>Item</td>
+					<td>Measure</td>
+					<td width="2%">Qty</td>
+					<td>Grams</td>
+					<td>Cal.</td>
+					<td>Protein</td>
+					<td>Fat</td>
+					<td>Carbs</td>
+					<td>Fiber</td>
+					<td width="5%"></td>
+				</tr>
+					<?php
+					
+					foreach($plan as $key=>$value){
+					
+						$item_stats = $this->item_stats->doRead($value->item_stats_id);
+						// get for right panel
+						$rightPanel['actual']['cals'] 		+= $item_stats->calories;
+						$rightPanel['actual']['protein'] 	+= $item_stats->protein;
+						$rightPanel['actual']['fat'] 		+= $item_stats->fat;
+						$rightPanel['actual']['carbs'] 		+= $item_stats->carbs;
+						$rightPanel['actual']['fiber'] 		+= $item_stats->fiber;
+						
+						$item = $this->item->doRead($value->item_id);
+					?>
+					<tr class="text-error small">
+						<td>
+						<?php
+						$pop_grocery = $pop_restaurant = $pop_cookbook = '';
+						if($item->eat_type == Model_DbTable_Item::GROCERY){
+							$pop_grocery = 'selected';
+						}
+						if($item->eat_type == Model_DbTable_Item::RESTAURANT){
+							$pop_restaurant = 'selected';
+						}
+						if($item->eat_type == Model_DbTable_Item::COOKBOOK){
+							$pop_cookbook = 'selected';
+						}
+						
+						$select_eat_type = "
+							<select class='popover-mini' onChange='popover_getItem(this.value,".$value->item_id.",".$value_m->id.",".$value->id.")' name='edit_pop_t_".$value->id."' name='edit_pop_t_".$value->id."' required >
+								<option >Select</option>
+								<option {$pop_grocery} value='".Model_DbTable_Item::GROCERY."'>".Model_DbTable_Item::GROCERY."</option>
+								<option {$pop_restaurant} value='".Model_DbTable_Item::RESTAURANT."'>".Model_DbTable_Item::RESTAURANT."</option>
+								<option {$pop_cookbook} value='".Model_DbTable_Item::COOKBOOK."'>".Model_DbTable_Item::COOKBOOK."</option>
+							</select>
+						";
+						
+						$Items = new Model_DbTable_Item;
+						
+						//============
+						$ParentItems = $Items->fetchAll("parent_id='1' and eat_type='".$item->eat_type."'");
+						$select_item = "
+							<select class='popover-mini' onChange='popover_getSubItem(this.value,".$value->id.")'  name='edit_pop_item_".$value->id."' id='edit_pop_item_".$value->id."' required >";
+						
+						foreach($ParentItems as $key_4=>$value_4){
+							$selected = '';
+							if($value_4->id == $item->parent_id ){
+								$selected = 'selected';
+							}
+							$select_item .= "<option {$selected} value='{$value_4->id}'>{$value_4->name}</option>";
+						}
+							
+						$select_item .= "</select>";
+						
+						//============
+						$SubItems = $Items->fetchAll("parent_id='".$item->parent_id."'");
+						$select_sub_item = "
+							<select class='popover-mini' onChange='popover_getSubItemQty(this.value,".$value->id.")'  name='edit_pop_sub_item_".$value->id."'  id='edit_pop_sub_item_".$value->id."' required >";
+							
+						foreach($SubItems as $key_5=>$value_5){
+							$selected = '';
+							if($value_5->id == $item->id ){
+								$selected = 'selected';
+							}
+							$select_sub_item .= "<option {$selected} value='{$value_5->id}'>{$value_5->name}</option>";
+						}
+							
+						$select_sub_item .= "</select>";
+						
+						//===========
+						$ItemsStats = new Model_DbTable_Item_Stats;
+						
+						$ItemsQty = $ItemsStats->fetchAll("item_id='".$item->id."' and is_custom=''");
+						$select_qty = "
+							<select class='popover-mini' onChange='popover_getSubItemQtyStats(this.value,".$value->id.")' name='edit_pop_sub_item_qty_".$value->id."'  id='edit_pop_sub_item_qty_".$value->id."' required >";
+						
+						$select_qty .= "<option value='custom'>Custom</option>";	
+						foreach($ItemsQty as $key_6=>$value_6){
+							$selected = '';
+							if($value_6->id == $item_stats->id ){
+								$selected = 'selected';
+							}
+							$select_qty .= "<option {$selected} value='{$value_6->id}'>{$value_6->weight}</option>";
+						}
+							
+						$select_qty .= "</select>";
+						
+						$disabled = "disabled='disabled'";
+						$custom_value = '';
+						if($item_stats->is_custom){
+							$disabled='';
+							$custom_value = $item_stats->weight;
+						}
+								
+						$custom = "<input class='popover-mini' value='{$custom_value}' type='text' name='custom_qty_".$value->id."'  id='custom_qty_".$value->id."' onkeyup='popover_getCustomQtyStats(this.value,".$value->id.")' {$disabled} >";
+						$btn = "<button type='submit' class='btn btn-mini pull-right btn-primary'><i class='icon icon-ok icon-white'></i></button>";
+						$form = "
+							<form action='".HTTP.WWW_ROOT."/user/meal/edit' method='post' class='small'>
+							<input type='hidden' name='edit_plan' value='".$value->id."'>
+							{$select_eat_type}
+							{$select_item}
+							{$select_sub_item}
+							{$select_qty}
+							{$custom}
+							{$btn}
+							<div class='text text-info' id='edit_pop_sub_item_qty_stats_".$value->id."'  name='edit_pop_sub_item_qty_stats_".$value->id."' ><span style='color:#999'>Serve:</span>".$item_stats->weight_unit.", <span style='color:#999'>Grams:</span>".$item_stats->grams.", <span style='color:#999'>Cals:</span>".$item_stats->calories.", <span style='color:#999'>Pro:</span>".$item_stats->protein.", <span style='color:#999'>Fat:</span>".$item_stats->fat.", <span style='color:#999'>Carbs:</span>".$item_stats->carbs.", <span style='color:#999'>Fiber:</span>".$item_stats->fiber."</div>
+							</form>
+						";
+						?>
+						<a href='' data-content="<?=$form?>" class='meal_edit_popover text-info underline' data-title='Edit Item' data-toggle='modal' role='button' > <?=$item->name?></a></td>
+						<td><?=$item_stats->weight_unit?></td>
+						<td><?=($item_stats->weight)?></td>
+						<td><?=round($item_stats->grams,2)?></td>
+						<td><?=round($item_stats->calories,2)?></td>
+						<td><?=round($item_stats->protein,2)?></td>
+						<td><?=round($item_stats->fat,2)?></td>
+						<td><?=round($item_stats->carbs,2)?></td>
+						<td><?=round($item_stats->fiber,2)?></td>
+						<td>
+							<nobr> 
+							
+							<a class='btn btn-mini' href='<?=HTTP.WWW_ROOT?>/user/meal/get-location/id/<?=$value->id?>' > <i class='icon icon-map-marker'></i> </a>
+							
+							<a class='btn btn-mini' href='<?=HTTP.WWW_ROOT?>/user/meal/delete-item/id/<?=$value->id?>' > <i class='icon icon-remove'></i> </a>
+							</nobr>
+						</td>
+					</tr>
+
+					<?php
+					}
+					?>
+					<tr class='alert alert-info'>
+						<td>
+						<?php
+							$select_eat_type = "
+							<select class='popover-mini' onChange='add_popover_getItem(this.value,".$get_meal_id.",".$get_meal_id.",".$get_meal_id.")' name='add_pop_t_".$get_meal_id."' name='add_pop_t_".$get_meal_id."' required >
+								<option >Select</option>
+								<option value='".Model_DbTable_Item::GROCERY."'>".Model_DbTable_Item::GROCERY."</option>
+								<option value='".Model_DbTable_Item::RESTAURANT."'>".Model_DbTable_Item::RESTAURANT."</option>
+								<option value='".Model_DbTable_Item::COOKBOOK."'>".Model_DbTable_Item::COOKBOOK."</option>
+							</select>
+						";
+						$select_item = "
+							<select class='popover-mini' onChange='add_popover_getSubItem(this.value,".$get_meal_id.")'  name='add_pop_item_".$get_meal_id."' id='add_pop_item_".$get_meal_id."' required ></select>
+						";
+						$select_sub_item = "
+							<select class='popover-mini' onChange='add_popover_getSubItemQty(this.value,".$get_meal_id.")'  name='add_pop_sub_item_".$get_meal_id."'  id='add_pop_sub_item_".$get_meal_id."' required ></select>
+						";
+						$select_qty = "
+							<select class='popover-mini' onChange='add_popover_getSubItemQtyStats(this.value,".$get_meal_id.")' name='add_pop_sub_item_qty_".$get_meal_id."'  id='add_pop_sub_item_qty_".$get_meal_id."' required ></select>
+						";
+						$btn = "<button type='submit' class='btn btn-mini pull-right btn-primary'><i class='icon icon-ok icon-white'></i></button>";
+						$form = "
+							<form action='".HTTP.WWW_ROOT."/user/meal/add' method='post' class='small'>
+							<input type='hidden' name='add_plan' value='".$get_meal_id."'>
+							<input type='hidden' name='meal_id' value='".$get_meal_id."'>
+							<input type='hidden' name='user_meal_id' value='".$this->user_meal_data->id."'>
+							{$select_eat_type}
+							{$select_item}
+							{$select_sub_item}
+							{$select_qty}
+							{$btn}
+							<div class='text text-info' id='add_pop_sub_item_qty_stats_".$get_meal_id."'  name='add_pop_sub_item_qty_stats_".$get_meal_id."' >Stats</div>
+							</form>
+						";
+
+						?>
+						<a href='' data-content="<?=$form?>" class='meal_add_popover' data-title='Add Item' data-toggle='modal' role='button'  > <i class='icon icon-plus'></i></a></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+			</tbody>
+		</table>
+	</div>	
+
+	<?php
+	}
+	?>	
+</div>
+
+<div class='span3'>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<h5><strong>Daily Macronutrient</strong></h5>
+			<table class='small table table-stripped table-condensed table-hover table-bordered'>
+				<Tr class='alert'>
+					<th>Nutrient</th>
+					<th>Actual</th>
+					<th>Target</th>
+				</tr>
+				<!--  ///////////    -->
+				<Tr >
+					<td class='muted'>Calories</td>
+					<td><?=round($rightPanel['actual']['cals'])?> cal</td>
+					<td><?=round($targets['cals'])?> cal</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round(($rightPanel['actual']['cals']/$targets['cals'])*100); ?> %</td>
+					<td> 100 %</td>
+				</tr>
+				<!--  ///////////    -->
+				<Tr>
+					<td class='muted'>Carbs</td>
+					<td><?=round($rightPanel['actual']['carbs'])?> g</td>
+					<td><?=round($targets['carbs'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['carbs']*4)/$targets['cals'])*100); ?> %</td>
+					<td> <?php echo round((($targets['carbs']*4)/$targets['cals'])*100); ?> %</td>
+				</tr>
+				<!--  ///////////    -->
+				
+				<Tr>
+					<td class='muted'>Protein</td>
+					<td><?=round($rightPanel['actual']['protein'])?> g</td>
+					<td><?=round($targets['protein'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['protein']*4)/$targets['cals'])*100); ?> %</td>
+					<td> <?php echo round((($targets['protein']*4)/$targets['cals'])*100); ?> %</td>
+				</tr>
+				<!--  ///////////    -->
+				
+				<Tr>
+					<td class='muted'>Fat</td>
+					<td><?=round($rightPanel['actual']['fat'])?> g</td>
+					<td><?=round($targets['fat'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['fat']*9)/$targets['cals'])*100); ?> %</td>
+					<td> <?php echo round((($targets['fat']*9)/$targets['cals'])*100); ?> %</td>
+				</tr>
+				<Tr>
+					<td class='muted'>Fiber</td>
+					<td><?=round($rightPanel['actual']['fiber'])?> g</td>
+					<td><?=round($targets['fiber'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round(($rightPanel['actual']['fiber']/$targets['fiber'])*100); ?> %</td>
+					<td> 100 %</td>
+				</tr>
+				
+			</table>
+		</div>
+	</div>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<h5><strong>Post Workout</strong></h5>
+			<table class='small table table-stripped table-condensed table-hover table-bordered'>
+				<Tr  class='alert'>
+					<th>Protein</th>
+					<th>Carbs</th>
+					<th>Calories</th>
+				</tr>
+				<Tr>
+					<td><?=round(.25 * 2.2 * $user->weight)?> g</td>
+					<td><?=round(.4 * 2.2 * $user->weight)?> g</td>
+					<td><?=round(((.25 * 2.2 * $user->weight) + (.4 * 2.2 * $user->weight)) * 4)?> cal</td>
+					</tr>
+			</table>
+		</div>
+	</div>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<h5><strong>Water Intake</strong></h5>
+			<table class='small table table-stripped table-condensed table-hover table-bordered'>
+				<tr class='alert'>
+					<th>Recommended</th>
+					<th><?=round(.668 * 2.2 * $user->weight)?> oz</th>
+				</tr>
+				<tr>
+					<td >Actual</td>
+					<td>
+						<form class='form-inline' method="post" action='<?=HTTP.WWW_ROOT?>/user/meal/update-water-intake'>
+							<input name='water_intake' type='text' value='<?=$user->water_intake?>' class='span4'>
+							<input type="submit" class='btn' value="Save">
+						</form>
+					</td>
+				</tr>		
+			</table>
+		</div>
+	</div>	
+</div>
+
+
+<script>
+
+	$("#create_name_submit").click(function(e){
+		var val = $("#create_name").val();	
+		if(val == ''){
+			e.preventDefault();
+			alert("Please enter Meal Name");
+			return false;
+		}
+	
+	});
+	
+	
+	function popover_getItem(val,item,m,id){
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/get-all-items-by-eat-type/item/"+item+"/m/"+m+"/t/"+val, // JSON_URL is a global variable
+			dataType: 'json',
+			error: function(xhr_data) {},
+			success: function(xhr_data){
+				//var evald_json  =$.evalJSON(xhr_data);
+				var select_box  = document.getElementById('edit_pop_item_'+id);						
+				select_box.options.length = 1;
+				
+				select_box.options[0].text = 'select';
+				select_box.options[0].value = '';
+				
+				d = xhr_data;
+				for(var key in d){		
+					var i = select_box.options.length++;
+					select_box.options[i].text  = d[key].name;
+					select_box.options[i].value = d[key].id;
+				}
+			},
+			contentType: 'application/json'
+		});
+
+	}
+
+	function popover_getSubItem(val,id){
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item/item/"+val, // JSON_URL is a global variable
+			dataType: 'json',
+			error: function(xhr_data) {},
+			success: function(xhr_data){
+				//var evald_json  =$.evalJSON(xhr_data);
+				var select_box  = document.getElementById('edit_pop_sub_item_'+id);						
+				select_box.options.length = 1;
+				
+				select_box.options[0].text = 'select';
+				select_box.options[0].value = '';
+				
+				d = xhr_data;
+				for(var key in d){		
+					var i = select_box.options.length++;
+					select_box.options[i].text  = d[key].name;
+					select_box.options[i].value = d[key].id;
+				}
+			},
+			contentType: 'application/json'
+		});
+
+	}
+
+	function popover_getSubItemQty(val,id){
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item-qty/item/"+val, // JSON_URL is a global variable
+			dataType: 'json',
+			error: function(xhr_data) {},
+			success: function(xhr_data){
+				//var evald_json  =$.evalJSON(xhr_data);
+				var select_box  = document.getElementById('edit_pop_sub_item_qty_'+id);						
+				select_box.options.length = 1;
+				
+				select_box.options[0].text = 'Custom';
+				select_box.options[0].value = 'custom';
+				
+				d = xhr_data;
+				for(var key in d){		
+					var i = select_box.options.length++;
+					select_box.options[i].text  = d[key].weight;
+					select_box.options[i].value = d[key].id;
+				}
+			},
+			contentType: 'application/json'
+		});
+
+	}
+	
+	function popover_getSubItemQtyStats(val,id){
+		
+		if(val == 'custom'){	
+			$('#custom_qty_'+id).removeAttr("disabled");	
+		}
+		else{
+			$('#custom_qty_'+id).attr("disabled", "disabled");
+				
+			$.ajax({
+				url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item-qty-stats/item/"+val, // JSON_URL is a global variable
+				dataType: 'json',
+				error: function(xhr_data) {},
+				success: function(xhr_data){
+					//var evald_json  =$.evalJSON(xhr_data);
+					var div_stats = $('#edit_pop_sub_item_qty_stats_'+id);					
+					d = xhr_data;
+					for(var key in d){		
+						div_stats.html('<span style="color:#999">Serve:</span>'+d.weight_unit+', <span style="color:#999">Grams:</span>'+d.grams+', <span style="color:#999">Cals:</span>'+d.calories+', <span style="color:#999">Pro:</span>'+d.protein+', <span style="color:#999">Fat:</span>'+d.fat+', <span style="color:#999">Carbs:</span>'+d.carbs+', <span style="color:#999">Fiber:</span>'+d.fiber);
+					}
+					
+				},
+				contentType: 'application/json'
+			});
+			
+		}
+	}
+	
+
+	function popover_getCustomQtyStats(val,id){
+		
+		var item  = $('#edit_pop_sub_item_'+id).val();
+				
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/get-custom-qty-stats/item/"+item+'/qty/'+val, // JSON_URL is a global variable
+			dataType: 'json',
+			error: function(xhr_data) {},
+			success: function(xhr_data){
+				//var evald_json  =$.evalJSON(xhr_data);
+				var div_stats = $('#edit_pop_sub_item_qty_stats_'+id);					
+				d = xhr_data;
+				for(var key in d){		
+					div_stats.html('<span style="color:#999">Serve:</span>'+d.weight_unit+', <span style="color:#999">Grams:</span>'+d.grams+', <span style="color:#999">Cals:</span>'+d.calories+', <span style="color:#999">Pro:</span>'+d.protein+', <span style="color:#999">Fat:</span>'+d.fat+', <span style="color:#999">Carbs:</span>'+d.carbs+', <span style="color:#999">Fiber:</span>'+d.fiber);
+				}
+				
+			},
+			contentType: 'application/json'
+		});
+
+	}
+	
+
+//############# for add ############################
+
+
+	function add_popover_getItem(val,item,m,id){
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/get-all-items-by-eat-type/item/"+item+"/m/"+m+"/t/"+val, // JSON_URL is a global variable
+			dataType: 'json',
+			error: function(xhr_data) {},
+			success: function(xhr_data){
+				//var evald_json  =$.evalJSON(xhr_data);
+				var select_box  = document.getElementById('add_pop_item_'+id);						
+				select_box.options.length = 1;
+				
+				select_box.options[0].text = 'select';
+				select_box.options[0].value = '';
+				
+				d = xhr_data;
+				for(var key in d){		
+					var i = select_box.options.length++;
+					select_box.options[i].text  = d[key].name;
+					select_box.options[i].value = d[key].id;
+				}
+			},
+			contentType: 'application/json'
+		});
+
+	}
+
+	function add_popover_getSubItem(val,id){
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item/item/"+val, // JSON_URL is a global variable
+			dataType: 'json',
+			error: function(xhr_data) {},
+			success: function(xhr_data){
+				//var evald_json  =$.evalJSON(xhr_data);
+				var select_box  = document.getElementById('add_pop_sub_item_'+id);						
+				select_box.options.length = 1;
+				
+				select_box.options[0].text = 'select';
+				select_box.options[0].value = '';
+				
+				d = xhr_data;
+				for(var key in d){		
+					var i = select_box.options.length++;
+					select_box.options[i].text  = d[key].name;
+					select_box.options[i].value = d[key].id;
+				}
+			},
+			contentType: 'application/json'
+		});
+
+	}
+
+	function add_popover_getSubItemQty(val,id){
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item-qty/item/"+val, // JSON_URL is a global variable
+			dataType: 'json',
+			error: function(xhr_data) {},
+			success: function(xhr_data){
+				//var evald_json  =$.evalJSON(xhr_data);
+				var select_box  = document.getElementById('add_pop_sub_item_qty_'+id);						
+				select_box.options.length = 1;
+				
+				select_box.options[0].text = 'select';
+				select_box.options[0].value = '';
+				
+				d = xhr_data;
+				for(var key in d){		
+					var i = select_box.options.length++;
+					select_box.options[i].text  = d[key].weight;
+					select_box.options[i].value = d[key].id;
+				}
+			},
+			contentType: 'application/json'
+		});
+
+	}
+	
+	function add_popover_getSubItemQtyStats(val,id){
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item-qty-stats/item/"+val, // JSON_URL is a global variable
+			dataType: 'json',
+			error: function(xhr_data) {},
+			success: function(xhr_data){
+				//var evald_json  =$.evalJSON(xhr_data);
+				var div_stats = $('#add_pop_sub_item_qty_stats_'+id);					
+				d = xhr_data;
+				for(var key in d){		
+					div_stats.html('<span style="color:#999">Serve:</span>'+d.weight_unit+', <span style="color:#999">Grams:</span>'+d.grams+', <span style="color:#999">Cals:</span>'+d.calories+', <span style="color:#999">Pro:</span>'+d.protein+', <span style="color:#999">Fat:</span>'+d.fat+', <span style="color:#999">Carbs:</span>'+d.carbs+', <span style="color:#999">Fiber:</span>'+d.fiber);
+				}
+				
+			},
+			contentType: 'application/json'
+		});
+
+	}
+	
+	
+	
+	
+</script>
+

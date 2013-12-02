@@ -1,0 +1,51 @@
+
+<div class='row-fluid'>
+	<div class='span12 wesll'>
+		<div id="chart_div" class='center span12' style="height: 500px;"></div>
+	</div>
+</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+google.load('visualization', '1', {packages: ['corechart']});
+
+function drawVisualization() {
+    
+    //Some raw data (not necessarily accurate)'
+    var data = google.visualization.arrayToDataTable([
+        ['Day', 'Actual Calories', 'Target Calories','Weight in lbs'],
+        <?php
+        foreach($this->user_weight_data as $key=>$value){
+	        echo "['{$value->day}',{$value->actual_cals},{$value->target_cals},{$value->weight_lbs}],";
+        	
+        }
+        ?>
+    ]);
+    
+    var options = {
+        legend:{position:'bottom'},
+        title: 'Last 30 Days Calorie Consumption & Weight Chart',
+        hAxis: { minValue:1,title: "Day"},
+        vAxis: {0:{ title: "Day"},1:{ title: "Weight"}},
+        vAxes:[
+			{title:'Calories',minValue:0},
+			{title:'Weight',minValue:0}
+		],
+		series: {
+            0:{ type: "bars", targetAxisIndex: 0,color:'991122'},
+            1:{ type: "bars", targetAxisIndex: 0,color:'ff1111'},
+            2:{ type: "line", targetAxisIndex: 1,color:'green'}
+         },
+       pointSize:5,
+       fontSize:12
+    }
+
+    var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+}
+        
+google.setOnLoadCallback(drawVisualization);
+
+</script>
+

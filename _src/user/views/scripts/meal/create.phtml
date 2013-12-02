@@ -1,0 +1,282 @@
+<div class='span9'>
+	
+	<h3>
+		Meal - <?=ucwords($this->user_meal_data->name)?>
+	</h3>
+	<hr>
+	
+	<div class='row-fluid'>
+		<div class='span12'>
+			<form class="form-inline" method='post' >
+				<div class='span12 alert alert-info'>
+					<?php
+					$eat_in = $eat_out = '';
+					if($this->t == 'eat_in')
+						$eat_in = 'active';
+					if($this->t == 'eat_out')
+						$eat_out = 'active';
+					?>
+					<div class='span2'>
+						<div class="btn-group" data-toggle="buttons-checkbox">
+							<a class="btn btn-danger <?=$eat_in?>" href='<?=HTTP.WWW_ROOT?>/user/meal/create/code/<?=$this->user_meal_data->code?>/t/eat_in'>Eat In</a>
+							<a class="btn btn-danger <?=$eat_out?>" href='<?=HTTP.WWW_ROOT?>/user/meal/create/code/<?=$this->user_meal_data->code?>/t/eat_out'>Eat Out</a>
+						</div>
+					</div>
+
+					<div class='span10'>
+						<div class='row-fluid'>
+							<div class='span12'>
+								<select class='span2' name='meal_id'>
+									<?php
+									if($this->meal_master)
+										foreach($this->meal_master as $key=>$value){
+											echo "<option value='".$value->id."'>".$value->name."</option>";
+										
+										}
+									?>
+								</select>
+								<select class='span2' onChange="getSubItem(this.value)"  name='item' required >
+								<option required value=''></option>
+									<?php
+									if($this->data)
+										foreach($this->data as $key=>$value){
+											echo "<option name='name' value='".$value->id."'>".$value->name."</option>";
+										
+										}
+									?>
+									
+								</select>
+								<select class='span2' required onChange="getSubItemUnits(this.value)" name='item_id' id='item_id' >
+								</select>
+								<select class='span2'  required onChange="getSubItemQty(this.value)" name='item_units_id' id='item_units_id' >
+								</select>
+								<select class='span2'  required name='item_qty_id' id='item_qty_id' >
+								</select>
+								<input type='submit' class='btn btn-success' value='Save'>
+								<a class='btn' href='<?=HTTP.WWW_ROOT?>/user/meal/plan'>Cancel</a>
+							</div>
+						</div>
+					</div>
+					<input type='hidden' value='<?=$this->user_meal_data->id?>' name='user_meal_id'>
+					<input type='hidden' value='<?=$this->t?>' name='t'>
+				
+				</div>
+			</form>					
+		</div>
+	</div>
+	
+	<!-- 
+	<div class='row-fluid'>
+		<div class='span12 alert alert-info'>
+			Loading calories, fat, etc …				
+		</div>
+	</div>
+	-->	
+
+	<?php
+	$user = $this->user->doRead($this->auth->id);
+	$targets = $this->user_required->getTargets($this->auth->id);
+	
+	foreach($this->meal_master as $key_m=>$value_m){
+		
+		$select = $this->user_required->select();
+		$select->where("user_id=?",$this->auth->id);
+		$select->where("meal_id=?",$value_m->id);
+		$required = $this->user_required->fetchRow($select);
+		
+		// get for right panel
+		$rightPanel['target']['cals'] 		+= $required->cal;
+		$rightPanel['target']['protein'] 	+= $required->protein;
+		$rightPanel['target']['fat'] 		+= $required->fat;
+		$rightPanel['target']['carbs'] 		+= $required->carbs;
+		$rightPanel['target']['fiber'] 		+= $required->fiber;
+		  
+		$plan = $this->user_meal_items->fetchAll(
+			"eat_type='".$this->t."' and 
+			user_meal_id='".$this->user_meal_data->id."' and 
+			meal_id='".$value_m->id."'");
+		
+		$subTotal = array();
+		foreach($plan as $key_sub=>$value_sub){
+	
+			$item_stats 			= $this->item_stats->doRead($value_sub->item_stats_id);
+			$subTotal['cals'] 		+= $item_stats->calories;
+			$subTotal['protein'] 	+= $item_stats->protein;
+			$subTotal['fat'] 		+= $item_stats->fat;
+			$subTotal['carbs'] 		+= $item_stats->carbs;
+			$subTotal['fiber'] 		+= $item_stats->fiber;
+		}		
+	?>
+	<div class='row-fluid'>
+		<table class='table table-stripped table-condensed table-hover table-bordered'>
+			<tbody>
+				<tr class="error bold small" >
+					<td width="25%"><?=$user->body_type?></td>
+					<td colspan="2">Total Required</th>
+					<td><?=$required->cal?> Cal</td>
+					<td><?=$required->protein?> g</td>
+					<td><?=$required->fat?> g</td>
+					<td><?=$required->carbs?> g</td>
+					<td> g</td>
+					<td></td>
+				</tr>
+				<tr class="success small">
+					<td><?=$value_m->name?></td>
+					<td>Serving</td>
+					<td></td>
+					<td><?=$subTotal['cals']?></td>
+					<td><?=$subTotal['protein']?></td>
+					<td><?=$subTotal['fat']?></td>
+					<td><?=$subTotal['carbs']?></td>
+					<td><?=$subTotal['fiber']?></td>
+					<td ></td>
+				</tr>
+				<tr class="muted small">
+					<td>Item</td>
+					<td>Measure</td>
+					<td>How Much?</td>
+					<td>Cal.</td>
+					<td>Protein</td>
+					<td>Fat</td>
+					<td>Carbs</td>
+					<td>Fiber</td>
+					<td width="5%"></td>
+				</tr>
+					<?php
+					
+					foreach($plan as $key=>$value){
+					
+						$item_stats = $this->item_stats->doRead($value->item_stats_id);
+						// get for right panel
+						$rightPanel['actual']['cals'] 		+= $item_stats->calories;
+						$rightPanel['actual']['protein'] 	+= $item_stats->protein;
+						$rightPanel['actual']['fat'] 		+= $item_stats->fat;
+						$rightPanel['actual']['carbs'] 		+= $item_stats->carbs;
+						$rightPanel['actual']['fiber'] 		+= $item_stats->fiber;
+						
+						$item = $this->item->doRead($value->item_id);
+					?>
+					<tr class="text-error small">
+						<td><?=$item->name?></td>
+						<td><?=$item_stats->weight_unit?></td>
+						<td><?=$item_stats->weight?></td>
+						<td><?=$item_stats->calories?></td>
+						<td><?=$item_stats->protein?></td>
+						<td><?=$item_stats->fat?></td>
+						<td><?=$item_stats->carbs?></td>
+						<td><?=$item_stats->fiber?></td>
+						<td>
+							<?php
+							if($this->t == 'eat_in'){
+							?>
+							<a class='btn btn-mini btn-danger' href='<?=HTTP.WWW_ROOT?>/user/meal/delete/id/<?=$value->id?>' > <i class='icon icon-remove icon-white'></i> </a>
+							<?php
+							}
+							if($this->t == 'eat_out'){
+							?>
+							<a class='btn btn-mini ' href='<?=HTTP.WWW_ROOT?>/user/meal/search-eat-out-places/id/<?=$value->id?>' > <i class='icon icon-map-marker'></i> </a>
+							
+							<?php
+							}
+							?>
+						</td>
+					</tr>
+
+					<?php
+					}
+					?>
+			</tbody>
+		</table>
+	</div>	
+
+	<?php
+	}
+	?>
+	
+</div>
+
+<div class='span3'>
+	<div class='row-fluid'>
+		<div class='span12'></div>
+	</div>
+
+	<div class='row-fluid'>
+		<div class='span12 border-panel'>
+			<h5><strong>Daily Macronutrient</strong></h5>
+			<table class='small table table-stripped table-condensed table-hover table-bordered'>
+				<Tr class='alert'>
+					<th>Nutrient</th>
+					<th>Actual</th>
+					<th>Target</th>
+				</tr>
+				<Tr >
+					<td class='muted'>Calories</td>
+					<td><?=$rightPanel['actual']['cals']?> cal</td>
+					<td><?=round($targets['cals'])?> cal</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round(($rightPanel['actual']['cals']/$rightPanel['target']['cals'])*100); ?> %</td>
+					<td> 100 %</td>
+				</tr>
+				<Tr>
+					<td class='muted'>Carbs</td>
+					<td><?=$rightPanel['actual']['carbs']?> g</td>
+					<td><?=round($targets['carbs'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['carbs']*4)/$rightPanel['target']['cals'])*100); ?> %</td>
+					<td> <?php echo round((($rightPanel['target']['carbs']*4)/$rightPanel['target']['cals'])*100); ?> %</td>
+				</tr>
+				<Tr>
+					<td class='muted'>Protein</td>
+					<td><?=$rightPanel['actual']['protein']?> g</td>
+					<td><?=round($targets['protein'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['protein']*4)/$rightPanel['target']['cals'])*100); ?> %</td>
+					<td> <?php echo round((($rightPanel['target']['protein']*4)/$rightPanel['target']['cals'])*100); ?> %</td>
+				</tr>
+				<Tr>
+					<td class='muted'>Fat</td>
+					<td><?=$rightPanel['actual']['fat']?> g</td>
+					<td><?=round($targets['fat'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['fat']*9)/$rightPanel['target']['cals'])*100); ?> %</td>
+					<td> <?php echo round((($rightPanel['target']['fat']*9)/$rightPanel['target']['cals'])*100); ?> %</td>
+				</tr>
+				<Tr>
+					<td class='muted'>Fiber</td>
+					<td><?=$rightPanel['actual']['fiber']?> g</td>
+					<td><?=round($targets['fiber'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round(($rightPanel['actual']['fiber']/$rightPanel['target']['fiber'])*100); ?> %</td>
+					<td> 100 %</td>
+				</tr>
+				
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	$(function(){
+		$('#eat_in_flag').on('click',function(){
+			window.location = '<?=HTTP.WWW_ROOT?>/user/meal/create/t/eat_in'
+		});
+		$('#eat_out_flag').on('click',function(){
+			window.location = '<?=HTTP.WWW_ROOT?>/user/meal/create/t/eat_out'
+		});
+		
+	});
+
+</script>
+
+

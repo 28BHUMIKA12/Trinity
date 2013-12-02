@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<title><?=APP_NAME?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<link href="<?=HTTP.WWW_ROOT?>/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/jquery/jquery.js"></script>
+<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/jquery/jquery.sparklines.js"></script>
+
+<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/bootstrap/js/bootstrap.js"></script>
+	
+<link href="<?=HTTP.WWW_ROOT?>/lib/bootstrap/css/custom.css" rel="stylesheet">
+<style >
+body{
+	margin:10px;
+}
+</style>
+<div class='alert'>Press crtl + p to print</div>
+<?php
+	$user = $this->user->doRead($this->auth->id);
+	$targets = $this->user_required->getTargets($this->auth->id);
+
+?>
+<div class='span12'>
+          
+	<?php
+	
+	if($this->auth->fitness_tip_by_trainer){
+	?>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<div class='alert alert-success'><i class='icon icon-hand-right'></i> <?=$this->auth->fitness_tip_by_trainer?></div>
+		</div>
+	</div>
+	<?php
+	}
+	?>	
+
+	<?php
+	
+	foreach($this->meal_master as $key_m=>$value_m){
+		
+		$select = $this->user_required->select();
+		$select->where("user_id=?",$this->auth->id);
+		$select->where("meal_id=?",$value_m->id);
+		$required = $this->user_required->fetchRow($select);
+		
+		$get_meal_name = $value_m->name;
+		$get_meal_id = $value_m->id;
+		
+		if($this->after_meal == $get_meal_id){
+			$get_meal_name = 'After Meal';
+			$get_meal_id = 7;
+		}
+		$plan = $this->user_meal_items->fetchAll(
+			"user_meal_id='".$this->user_meal_data->id."' and 
+			meal_id='".$get_meal_id."'");
+		
+		$subTotal = array();
+		foreach($plan as $key_sub=>$value_sub){
+	
+			$item_stats 			= $this->item_stats->doRead($value_sub->item_stats_id);
+			$subTotal['cals'] 		+= $item_stats->calories;
+			$subTotal['protein'] 	+= $item_stats->protein;
+			$subTotal['fat'] 		+= $item_stats->fat;
+			$subTotal['carbs'] 		+= $item_stats->carbs;
+			$subTotal['fiber'] 		+= $item_stats->fiber;
+		}		
+	?>
+	<div class='row-fluid'>
+		<table class='table table-stripped table-condensed pad1 table-hover table-bordered'>
+			<tbody>
+				<tr class="error bold small" >
+					<td width="25%"><?=$user->body_type?></td>
+					<td colspan="3">Total Req.</th>
+					<td><?=$required->cal?> Cal</td>
+					<td><?=$required->protein?> g</td>
+					<td><?=$required->fat?> g</td>
+					<td><?=$required->carbs?> g</td>
+					<td> g</td>
+				</tr>
+				<tr class="success small">
+					<td><?=$get_meal_name?></td>
+					<td>Serving</td>
+					<td></td>
+					<td></td>
+					<td><?=round($subTotal['cals'],2)?></td>
+					<td><?=round($subTotal['protein'],2)?></td>
+					<td><?=round($subTotal['fat'],2)?></td>
+					<td><?=round($subTotal['carbs'],2)?></td>
+					<td><?=round($subTotal['fiber'],2)?></td>
+				</tr>
+				<tr class="muted small">
+					<td>Item</td>
+					<td>Measure</td>
+					<td width="2%">Qty</td>
+					<td>Grams</td>
+					<td>Cal.</td>
+					<td>Protein</td>
+					<td>Fat</td>
+					<td>Carbs</td>
+					<td>Fiber</td>
+				</tr>
+					<?php
+					
+					foreach($plan as $key=>$value){
+					
+						$item_stats = $this->item_stats->doRead($value->item_stats_id);
+						// get for right panel
+						$rightPanel['actual']['cals'] 		+= $item_stats->calories;
+						$rightPanel['actual']['protein'] 	+= $item_stats->protein;
+						$rightPanel['actual']['fat'] 		+= $item_stats->fat;
+						$rightPanel['actual']['carbs'] 		+= $item_stats->carbs;
+						$rightPanel['actual']['fiber'] 		+= $item_stats->fiber;
+						
+						$item = $this->item->doRead($value->item_id);
+					?>
+					<tr class="text-error small">
+						<td>
+						<?=$item->name?></td>
+						<td><?=$item_stats->weight_unit?></td>
+						<td><?=($item_stats->weight)?></td>
+						<td><?=round($item_stats->grams,2)?></td>
+						<td><?=round($item_stats->calories,2)?></td>
+						<td><?=round($item_stats->protein,2)?></td>
+						<td><?=round($item_stats->fat,2)?></td>
+						<td><?=round($item_stats->carbs,2)?></td>
+						<td><?=round($item_stats->fiber,2)?></td>
+					</tr>
+
+					<?php
+					}
+					?>
+			</tbody>
+		</table>
+	</div>	
+
+	<?php
+	}
+	?>	
+</div>
+
+<div class='span3'>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<h5><strong>Daily Macronutrient</strong></h5>
+			<table class='small table table-stripped table-condensed table-hover table-bordered'>
+				<Tr class='alert'>
+					<th>Nutrient</th>
+					<th>Actual</th>
+					<th>Target</th>
+				</tr>
+				<!--  ///////////    -->
+				<Tr >
+					<td class='muted'>Calories</td>
+					<td><?=$rightPanel['actual']['cals']?> cal</td>
+					<td><?=round($targets['cals'])?> cal</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round(($rightPanel['actual']['cals']/$targets['cals'])*100); ?> %</td>
+					<td> 100 %</td>
+				</tr>
+				<!--  ///////////    -->
+				
+				<Tr>
+					<td class='muted'>Carbs</td>
+					<td><?=$rightPanel['actual']['carbs']?> g</td>
+					<td><?=round($targets['carbs'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['carbs']*4)/$targets['cals'])*100); ?> %</td>
+					<td> <?php echo round((($targets['carbs']*4)/$targets['cals'])*100); ?> %</td>
+				</tr>
+				<!--  ///////////    -->
+				
+				<Tr>
+					<td class='muted'>Protein</td>
+					<td><?=$rightPanel['actual']['protein']?> g</td>
+					<td><?=round($targets['protein'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['protein']*4)/$targets['cals'])*100); ?> %</td>
+					<td> <?php echo round((($targets['protein']*4)/$targets['cals'])*100); ?> %</td>
+				</tr>
+				<!--  ///////////    -->
+				
+				<Tr>
+					<td class='muted'>Fat</td>
+					<td><?=$rightPanel['actual']['fat']?> g</td>
+					<td><?=round($targets['fat'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round((($rightPanel['actual']['fat']*9)/$targets['cals'])*100); ?> %</td>
+					<td> <?php echo round((($targets['fat']*9)/$targets['cals'])*100); ?> %</td>
+				</tr>
+				<Tr>
+					<td class='muted'>Fiber</td>
+					<td><?=$rightPanel['actual']['fiber']?> g</td>
+					<td><?=round($targets['fiber'])?> g</td>
+				</tr>
+				<Tr>
+					<td></td>
+					<td> <?php echo round(($rightPanel['actual']['fiber']/$targets['fiber'])*100); ?> %</td>
+					<td> 100 %</td>
+				</tr>
+				
+			</table>
+		</div>
+	</div>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<h5><strong>Post Workout</strong></h5>
+			<table class='small table table-stripped table-condensed table-hover table-bordered'>
+				<Tr  class='alert'>
+					<th>Protein</th>
+					<th>Carbs</th>
+					<th>Calories</th>
+				</tr>
+				<Tr>
+					<td><?=round(.25 * 2.2 * $user->weight)?> g</td>
+					<td><?=round(.4 * 2.2 * $user->weight)?> g</td>
+					<td><?=round(((.25 * 2.2 * $user->weight) + (.4 * 2.2 * $user->weight)) * 4)?> cal</td>
+					</tr>
+			</table>
+		</div>
+	</div>
+</div>
+

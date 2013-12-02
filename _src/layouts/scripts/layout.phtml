@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?=APP_NAME?></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+ 	<link href="<?=HTTP.WWW_ROOT?>/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+	<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/jquery/jquery.js"></script>
+	<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/jquery/jquery.sparklines.js"></script>
+	
+	<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/bootstrap/js/bootstrap.js"></script>
+		
+	<link href="<?=HTTP.WWW_ROOT?>/lib/bootstrap/css/custom.css" rel="stylesheet">
+	<!-- 
+	<link href='http://fonts.googleapis.com/css?family=Bevan' rel='stylesheet' type='text/css'>
+	<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/map/jquery.gmap.min.js"></script>
+	<script type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/map/jquery.ui.map.js"></script>
+	-->
+		
+	<script type="text/javascript">
+	  $(document).ready(function () {
+	
+	      $(window).scroll(function () {
+	          if ($(this).scrollTop() > 100) {
+	              $('.scrollup').fadeIn();
+	          } else {
+	              $('.scrollup').fadeOut();
+	          }
+	      });
+	
+	      $('.scrollup').click(function () {
+	          $("html, body").animate({
+	              scrollTop: 0
+	          }, 600);
+	          return false;
+	      });
+	
+	  });
+	</script>
+	
+	<script>
+	    $(function () {
+	        $("[rel='tooltip']").tooltip();
+	    });
+	</script>
+	
+	<script>
+		function getSubItem(val){
+			$.ajax({
+				url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item/item/"+val, // JSON_URL is a global variable
+				dataType: 'json',
+				error: function(xhr_data) {},
+				success: function(xhr_data){
+					//var evald_json  =$.evalJSON(xhr_data);
+					var select_box  = document.getElementById('item_id');						
+					select_box.options.length = 1;
+					
+					select_box.options[0].text = '';
+					select_box.options[0].value = '';
+					
+					d = xhr_data;
+					for(var key in d){		
+						var i = select_box.options.length++;
+						select_box.options[i].text  = d[key].name;
+						select_box.options[i].value = d[key].id;
+					}
+				},
+				contentType: 'application/json'
+			});
+		}
+		function getSubItemUnits(val){
+			$.ajax({
+				url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item-units/item/"+val, // JSON_URL is a global variable
+				dataType: 'json',
+				error: function(xhr_data) {},
+				success: function(xhr_data){
+					//var evald_json  =$.evalJSON(xhr_data);
+					var select_box  = document.getElementById('item_units_id');						
+					select_box.options.length = 1;
+					
+					select_box.options[0].text = '';
+					select_box.options[0].value = '';
+					
+					d = xhr_data;
+					for(var key in d){		
+						var i = select_box.options.length++;
+						select_box.options[i].text  = d[key].weight_unit;
+						select_box.options[i].value = d[key].id;
+					}
+				},
+				contentType: 'application/json'
+			});
+		}
+		function getSubItemQty(val){
+			$.ajax({
+				url: "<?=HTTP.WWW_ROOT?>/ajax/get-sub-item-qty/item/"+val, // JSON_URL is a global variable
+				dataType: 'json',
+				error: function(xhr_data) {},
+				success: function(xhr_data){
+					//var evald_json  =$.evalJSON(xhr_data);
+					var select_box  = document.getElementById('item_qty_id');						
+					select_box.options.length = 1;
+					
+					select_box.options[0].text = '';
+					select_box.options[0].value = '';
+					
+					d = xhr_data;
+					for(var key in d){		
+						var i = select_box.options.length++;
+						select_box.options[i].text  = d[key].weight;
+						select_box.options[i].value = d[key].id;
+					}
+				},
+				contentType: 'application/json'
+			});
+		}
+
+	</script>
+	
+</head><body>
+
+	
+	<?php
+	$TrainerTrainee = new Model_DbTable_Trainer_Trainee;
+	$User = new Model_DbTable_User;
+	$Auth = $User->doRead(Zend_Auth::getInstance()->getStorage()->read()->id);
+	
+	$MyTrainer = $TrainerTrainee->getTrainer($Auth->id);
+	
+	if(!$MyTrainer){
+		if($Auth->gender == 'Female'){
+		?>
+    		<img class=''  src='<?=HTTP.WWW_ROOT?>/res/img/default-women.jpg'>		    
+		<?php
+		}
+		else{
+    	?>
+	    	<img class=''  src='<?=HTTP.WWW_ROOT?>/res/img/default-men.jpg'>		    
+		<?php
+		}
+	}
+	else{
+	?>
+	
+	<img  src='<?=HTTP.WWW_ROOT?>/uploads/<?=$MyTrainer->pic?>'>
+	
+	<?php
+	}
+	?>
+
+<?php
+if(Zend_Auth::getInstance()->hasIdentity()){
+?>
+
+    <div class="navbar navbar-inverse">
+      <div class="navbar-inner">
+        <div class="container">
+         <a class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </a>
+           <div class="nav-collapse">
+        	  <ul class="nav">
+				<li><a href="<?=HTTP.WWW_ROOT?>/user/account/profile">Profile</a></li>
+				<li class="divider-vertical"></li>
+				<li><a href="<?=HTTP.WWW_ROOT?>/user/meal/plan">My Meal Plans</a></li>
+				<li class="divider-vertical"></li>
+				<li><a href="<?=HTTP.WWW_ROOT?>/user/meal/workout">My Workout</a></li>
+				<li class="divider-vertical"></li>
+				<li><a href="<?=HTTP.WWW_ROOT?>/user/quiz/home">My Brain Exercises</a></li>
+				<li class="divider-vertical"></li>
+				<li><a href='' data-content="<form action='<?=HTTP.WWW_ROOT?>/user/meal/progress-chart' method='post'>
+						<input name='weight_lbs' type='text' value='<?=$Auth->weight_lbs?>'  class='input-medium input-mini' placeholder='weight in lbs'><button type='submit' class='btn pull-right btn-mini btn-primary'>Go</button>
+						</form>" class='progress_chart_popover' data-title='Enter Your Current Weight in lbs' data-toggle='modal' role='button'  >Progress Chart</a></li>		      
+				<li class="divider-vertical"></li>
+				<li><a href="<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out">7 Days Out</a></li>
+				<li class="divider-vertical"></li>
+              </ul>
+              <ul class="nav pull-right">
+				<li><a href='<?=HTTP.WWW_ROOT?>/login/quit' ><i class='icon icon-lock icon-white'></i> <span class='red'>Logout</span></a></li>    
+              </ul>
+              
+           </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<?php
+}
+?>
+
+<div class="container-fluid">    
+    <small id="date_time" class='pull-left text text-info'></small>
+	<div class='row-fluid'>
+		<?php
+		if(Zend_Auth::getInstance()->hasIdentity()){
+		?>
+		<div class='pull-right  text'>Welcome, <?=$Auth->first_name?> <?=$Auth->last_name?>.</div>
+		<?php
+		}
+		?>
+	</div>
+
+	<hr >
+	<?php
+	if(Zend_Auth::getInstance()->hasIdentity()){
+	?>		
+		<div class='pull-right muted'>
+		<small>
+		<?=$Auth->points?> Points |
+		Goal: <?=$Auth->goal?> |
+		Body Type: <?=$Auth->body_type?>
+		</small>
+		</div>
+	<?php
+	}
+	?>
+	
+	<div class="row-fluid">
+		<div class="span12 border-panel">
+			<?php
+				echo $this->layout()->content;	
+			?>			
+		</div><!--/span-->
+	</div><!--/row-->
+	
+	<div class='row-fluid'>
+		<hr>
+	</div>
+	<div class='pull-right'>
+		<a href='#' class='scrollup btn disabled' style='cursor:pointer'><i class='icon-arrow-up'></i> TOP</a>
+	</div>
+		
+	<div class='row-fluid center footer-links'>
+		<a href='<?=HTTP.WWW_ROOT?>/support/faq'>FAQ</a> &nbsp;
+		<a href='<?=HTTP.WWW_ROOT?>/support/tnc'>Terms & Conditions</a> &nbsp;
+		<a href='<?=HTTP.WWW_ROOT?>/support/contact-us'>Contact</a>
+	</div>
+		
+	<footer class='center'>
+		<p style='color:#ababab;font-size:11px;letter-spacing:1px;'>&copy; 2013 Trinity. Developed by <a href='http://www.ztechnologygroup.com'>ZTG</a>.</p>
+	</footer>
+
+</div><!--/.fluid-container-->
+
+
+</body>
+
+</html>
+
+
+<script>
+	
+	$(function(){
+	
+		$("#print").click(function(){
+			window.print();
+			return false;
+		});
+		
+	    
+	    $(".meal_edit_popover").popover({
+	            placement: 'right',
+	            html: 'true'
+	    });
+
+	    $(".progress_chart_popover").popover({
+	            placement: 'bottom',
+	            html: 'true'
+	    });
+
+	    $(".meal_add_popover").popover({
+	            placement: 'right',
+	            html: 'true'	 
+	    });
+	    
+		$(':not(#anything)').on('click', function (e) {
+		    $('.meal_edit_popover').each(function () {
+		        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+		            $(this).popover('hide');
+		            return;
+		        }
+		    });
+		});
+
+		$(':not(#anything)').on('click', function (e) {
+		    $('.progress_chart_popover').each(function () {
+		        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+		            $(this).popover('hide');
+		            return;
+		        }
+		    });
+		});
+		
+	    $(':not(#anything)').on('click', function (e) {
+		    $('.meal_add_popover').each(function () {
+		        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+		            $(this).popover('hide');
+		            return;
+		        }
+		    });
+		});
+	    
+
+		/*
+		$('.popover_close').click(function(){
+           alert('11');
+           $('.meal_edit_popover').popover('hide');
+        });
+		*/
+	});
+	
+	function date_time(id)
+	{
+	        date = new Date;
+	        year = date.getFullYear();
+	        month = date.getMonth();
+	        months = new Array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+	        d = date.getDate();
+	        day = date.getDay();
+	        days = new Array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+	        h = date.getHours();
+	        if(h<10)
+	        {
+	                h = "0"+h;
+	        }
+	        m = date.getMinutes();
+	        if(m<10)
+	        {
+	                m = "0"+m;
+	        }
+	        s = date.getSeconds();
+	        if(s<10)
+	        {
+	                s = "0"+s;
+	        }
+	        var suffix = '';
+	        if (h > 11) {
+	            suffix += "PM";
+	        } else {
+	            suffix += "AM";
+	        }
+	        if (h > 12) {
+	            h -= 12;
+	        } else if (h === 0) {
+	            h = 12;
+	        }
+	        
+	        result = ''+days[day]+' '+months[month]+' '+d+' '+year+', '+h+':'+m+':'+s +' '+suffix;
+	        document.getElementById(id).innerHTML = result;
+	        setTimeout('date_time("'+id+'");','1000');
+	        return true;
+	}
+
+
+</script>
+<script type="text/javascript">window.onload = date_time('date_time');</script>
+  
+

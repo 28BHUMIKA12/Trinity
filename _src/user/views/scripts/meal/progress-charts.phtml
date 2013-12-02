@@ -1,0 +1,32 @@
+<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/jqplot/excanvas.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/jqplot/jquery.jqplot.min.js"></script>
+
+<script type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="<?=HTTP.WWW_ROOT?>/lib/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="<?=HTTP.WWW_ROOT?>/lib/jqplot/jquery.jqplot.css" />
+
+<div id="chart2" style="height:400px;width:900px; "></div>
+
+<script>
+
+$(document).ready(function(){
+    // For horizontal bar charts, x an y values must will be "flipped"
+    // from their vertical bar counterpart.
+    var plot2 = $.jqplot('chart2', [
+        [['helo',132]], 
+        [['dedede',144]]], {
+        seriesDefaults: {
+            renderer:$.jqplot.BarRenderer,
+        },
+        axes: {
+            y2axis: {
+                renderer: $.jqplot.CategoryAxisRenderer
+            }
+        }
+    });
+});
+</script>

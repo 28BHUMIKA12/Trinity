@@ -1,0 +1,90 @@
+<div class="btn-group pull-right" data-toggle="buttons-checkbox">
+	<a class="btn btn-primary" href='<?=HTTP.WWW_ROOT?>/trainer/trainee/assign'><i class='icon icon-plus icon-white'></i> Add Trainees</a>
+</div>		
+
+<h3>My Trainees</h3>
+<small class='muted'>
+<?php
+if($this->total < 2)
+	echo " $this->total Trainee found.";
+if($this->total > 1)
+	echo " $this->total Trainees found.";
+	
+?>
+</small>
+<hr>
+<?php echo $this->paginator; ?> 
+<br>
+<table class='table table-striped table-bordered'>
+	<tbody >
+		<th style='background-color:#ededed' >
+			Image
+		</th>
+		<th style='background-color:#ededed' >
+			Fitness Tip
+		</th>
+		<th style='background-color:#ededed' >
+			Name
+		</th>
+		<th style='background-color:#ededed'>
+			Gender
+		</th>
+		<th style='background-color:#ededed'>
+			Email / Mobile
+		</th>
+		<th style='background-color:#ededed'>
+			Points
+		</th>
+		<th style='background-color:#ededed'>
+			Action
+		</th>
+		
+	</tbody>
+		<?php
+		
+		foreach($this->paginator as $key=>$value){
+			echo "
+			<tr>
+				<td width='10%'>
+					<img class='thumbnail span12' src='".HTTP.WWW_ROOT."/uploads/".$value['pic']."'>
+				</td>
+				<td>
+					<form action='' method='post'>
+					<input type='hidden' name='set_tip' value='1'>
+					<textarea maxlength='400' placeholder='max 400 char' name='tip[".$value['trainee_id']."]' >".$value['fitness_tip_by_trainer']."</textarea> 
+					<input type='submit' value='Go' class='btn'>
+					</form>
+				</td>
+				<td>
+					{$value['first_name']}
+					{$value['last_name']}
+				</td>
+				<td>
+					{$value['gender']}
+				</td>
+				<td>
+					{$value['email']} / 
+					{$value['mobile']}
+
+				</td>
+				<td>
+					<form action='' method='post' class='form-inline' >
+					<input type='hidden' name='set_points' value='1'>
+					<input type='hidden' name='trainee_id' value='{$value['trainee_id']}'>
+					<input type='text' class='input-mini' name='points' value='{$value['points']}'>
+					<input type='submit' class='btn' value='Go'>
+					</form>
+				</td>
+				<td class='span3'>			
+					<a class='btn btn-danger btn-mini' href='".HTTP.WWW_ROOT."/trainer/trainee/remove/id/".$value['id']."' >Remove</a>		
+					<a class='btn btn-warning btn-mini' href='".HTTP.WWW_ROOT."/trainer/trainee/exercise/id/".$value['trainee_id']."' >Edit Exercise</a>
+				</td>
+				
+			</tr>";
+		
+		}
+		?>
+		
+</table>
+
+<?php echo $this->paginator; ?>

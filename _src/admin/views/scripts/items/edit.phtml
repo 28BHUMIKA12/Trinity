@@ -1,0 +1,240 @@
+<div class='span1'>
+</div>
+           
+<div class='span10 white-panel'>
+	<div class='row-fluid'>
+	
+		<?php
+		if($this->err){
+			echo "<div class='alert alert-error'>{$this->err}</div>";
+		}
+		if($this->msg){
+			echo "<div class='alert alert-success'>{$this->msg}</div>";
+		}
+		?>
+		<div class='row-fluid'>
+			<div class='span12'>
+				<form  method='post'  action='' enctype='multipart/form-data'>		
+				<div class='span6'>
+					<h3>
+						Edit <?=$this->itemData->name?> Item.
+					</h3>
+						
+						<?php
+							if($this->t == Model_DbTable_Item::GROCERY)
+								$eat_grocery = 'checked="checked"';
+							if($this->t == Model_DbTable_Item::RESTAURANT)
+								$eat_restaurant = 'checked="checked"';
+							if($this->t == Model_DbTable_Item::COOKBOOK)
+								$eat_cookbook = 'checked="checked"';
+						?>
+						<p>
+						<label class="radio inline">
+						<input required <?=$eat_grocery?> type="radio" name="eat_type" id='eat_grocery_flag' value="<?=Model_DbTable_Item::GROCERY?>" >
+							<?=Model_DbTable_Item::GROCERY?>
+						</label>
+						
+						<label class="radio inline">
+						<input required <?=$eat_restaurant?> type="radio" name="eat_type"  value="<?=Model_DbTable_Item::RESTAURANT?>" id='eat_restaurant_flag' >
+							<?=Model_DbTable_Item::RESTAURANT?>
+						</label>
+						
+						<label class="radio inline">
+						<input required <?=$eat_cookbook?> type="radio" name="eat_type"  value="<?=Model_DbTable_Item::COOKBOOK?>" id='eat_cookbook_flag' >
+							<?=Model_DbTable_Item::COOKBOOK?>
+						</label>
+						</p>
+						
+						<?php
+						if($this->itemData->parent_id > '1' ){
+						?>
+						<p>
+						<select rel="tooltip" data-placement="top" title="Select A Parent Item." data-trigger="hover" name='parent_id' required >
+							<?php
+							//$data = $this->item->fetchAll("parent_id='1'");
+							if($this->data)
+								foreach($this->data as $key=>$value){
+									if($value->id == $this->itemData->parent_id)
+										$selected = 'selected';
+									else
+										$selected = '';
+									echo "<option name='name' {$selected} value='".$value->id."'>".$value->name."</option>";
+								
+								}
+							?>
+							
+						</select>
+						</p>			
+						<?php
+						}
+						?>
+						<p><input type="text" name='name' title="Item Name." required placeholder="Item Name" rel="tooltip" data-placement="top" data-trigger="hover" value='<?=$this->itemData->name?>' ></p>
+						
+						<button type="submit" class="btn btn-primary"> Submit </button>
+								
+				</div>
+				
+				<div class='span6'>
+					<h3>&nbsp;</h3>
+					<div class='muted'>CTRL to multi select</div>
+					<select required  multiple name='meal_id[]' style="height:140px">
+						<?php
+						$meal = $this->meal->fetchAll();
+						$meal_item = new Model_DbTable_Meal_Item;
+						if($meal)
+							foreach($meal as $key=>$value){
+								$meal_item_data = 
+									$meal_item->fetchRow("meal_id='{$value->id}' and item_id='{$this->itemData->id}'");
+								
+								$selected = '';
+								if($meal_item_data){
+									$selected='selected';
+								}
+								echo "<option {$selected} value='".$value->id."'>".$value->name."</option>";
+							
+							}
+						?>
+					</select>
+					
+				</div>
+			</form>
+			</div>		
+		</div>
+	</div>
+
+	<?php
+	if($this->itemData->parent_id > '1' ){
+	?>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<hr>
+		</div>	
+	</div>
+	
+	<div class='row-fluid'>
+		<div class='span12'>
+			<h3>Exclusivity For This Item</h3>
+		</div>	
+	</div>
+
+	<div class='row-fluid'>
+		<div class='span12'>
+			<form class='form' method="post" action="<?=HTTP.WWW_ROOT?>/admin/items/add-exclusivity/item_id/<?=$this->itemData->id?>">
+			<input type="text" name="tags" placeholder="type meal here" class="tm-input"/>
+			<br>
+			<input type='submit' value="Save" class='btn'>
+			</form>
+			
+			<div>
+			<?php
+			foreach($this->exclusive as $key=>$value){
+				$Item = new Model_DbTable_Item;
+				$xItem = $Item->doRead($value->x_id);
+				echo "<span  style='margin:1px;font-weight:normal' class='badge badge-info'>{$xItem->name}{$value->x_id} <a href='".HTTP.WWW_ROOT."/admin/items/remove-exclusivity/item_id/".$this->itemData->id."/x_id/".$value->x_id."'><i class='icon icon-remove'></i></a> </span> ";
+			}
+			?>
+			</div>
+		</div>	
+	</div>
+	<?php
+	}
+	?>
+	
+	<div class='row-fluid'>
+		<div class='span12'>
+			<hr>
+		</div>	
+	</div>
+
+	<div class='row-fluid'>
+		<div class='span12'>
+			<h3>Add More Statistics</h3>
+		</div>	
+	</div>
+	
+	<?php
+	if($this->itemData->parent_id > '1' ){
+	?>
+	<div class='row-fluid'>
+		<form class='alert alert-danger' method="post" action="<?=HTTP.WWW_ROOT?>/admin/items/add-stats/">
+			<input type="hidden" name='item_id' value="<?=$this->itemData->id?>">
+			<input type='text' name='weight_unit' class='input-small' placeholder="measure">
+			<input type='text' name='weight' class='input-small' placeholder="qty">
+			<input type='text' name='grams' class='input-small' placeholder="grams">
+			<input type='text' name='calories' class='input-small' placeholder="cals">
+			<input type='text' name='protein' class='input-small' placeholder="protein">
+			<input type='text' name='fat' class='input-small' placeholder="fat">
+			<input type='text' name='carbs' class='input-small' placeholder="carbs">
+			<input type='text' name='fiber' class='input-small' placeholder="fiber">
+			<br><input type="submit" value='Save' class='btn'>
+		</form>
+		<table class='table table-stripped table-condensed pad1 table-hover table-bordered'>
+		<tbody>
+			<tr class='alert alert-info'>
+				<Td>Measure</TD>
+				<Td>Qty</TD>
+				<Td>Grams</TD>
+				<Td>Cals</TD>
+				<Td>Protein</TD>
+				<Td>Fat</TD>
+				<Td>Carbs</TD>
+				<Td>Fiber</TD>
+				<Td></TD>
+			</tr>
+		<?php
+		foreach($this->stats as $key=>$value){
+		?>
+			<tr>
+				<Td><?=$value->weight_unit?></TD>
+				<Td><?=$value->weight?></TD>
+				<Td><?=$value->grams?></TD>
+				<Td><?=$value->calories?></TD>
+				<Td><?=$value->protein?></TD>
+				<Td><?=$value->fat?></TD>
+				<Td><?=$value->carbs?></TD>
+				<Td><?=$value->fiber?></TD>
+				<Td><a href='<?=HTTP.WWW_ROOT?>/admin/items/delete-stats/id/<?=$value->id?>/item_id/<?=$this->itemData->id?>' class='btn btn-danger'><i class='icon icon-white icon-remove'></i></a></TD>
+			</tr>
+		<?php
+		}
+		?>	
+		</tbody>
+		</table>
+		
+		<?php
+		
+		}
+		?>
+	</div>
+	
+</div>
+<div class='span1'>
+</div>
+
+<script>
+	$(function(){
+		$('#eat_in_flag').on('click',function(){
+			window.location = '<?=HTTP.WWW_ROOT?>/admin/items/edit/id/<?=$this->itemData->id?>/t/eat_in'
+		});
+		$('#eat_out_flag').on('click',function(){
+			window.location = '<?=HTTP.WWW_ROOT?>/admin/items/edit/id/<?=$this->itemData->id?>/t/eat_out'
+		});
+		
+	});
+	
+	jQuery(".tm-input").tagsManager({
+		typeahead: true,
+		typeaheadAjaxSource: '<?=HTTP.WWW_ROOT?>/admin/ajax/get-items-for-tags',
+		typeaheadAjaxPolling: true,
+		blinkBGColor_1: '#FFFF9C',
+		blinkBGColor_2: '#CDE69C',
+		tagClass:'tm-tag tm-tag-info'
+	});
+	
+	
+</script>
+
+
+
+
+

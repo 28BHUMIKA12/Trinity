@@ -1,0 +1,28 @@
+<h3>
+<img src='<?=HTTP.WWW_ROOT?>/res/img/ajax-loader.gif'>
+	Getting your current location…
+</h3>
+<br><hr>
+<div class='text text-info'><strong>By agreeing to share your location, a map appears with your current location to assist you to find the food item nearby. Your current location will not be saved or never be share with anyone.</strong></div>
+<br><br>
+<a href='<?=HTTP.WWW_ROOT?>/user/meal/search-eat-out-places/id/<?=$this->id?>' class='btn btn-danger'>Click here if its taking too long.</a>
+<script>
+	navigator.geolocation.getCurrentPosition(function(position){
+		lat = position.coords.latitude;
+  		long = position.coords.longitude; 
+		
+		$.ajax({
+			url: "<?=HTTP.WWW_ROOT?>/ajax/set-current-location/lat/"+lat+"/long/"+long, 
+			dataType: 'json',
+			error: function(xhr_data) {
+				window.location = '<?=HTTP.WWW_ROOT?>/user/meal/search-eat-out-places/id/<?=$this->id?>';
+			},
+			success: function(xhr_data){
+				window.location = '<?=HTTP.WWW_ROOT?>/user/meal/search-eat-out-places/id/<?=$this->id?>';
+			},
+			contentType: 'application/json'
+		});
+		
+	});
+</script>
+

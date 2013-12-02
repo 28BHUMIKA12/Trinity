@@ -1,0 +1,28 @@
+<div class='span12'>
+
+	<h3>New Trainer Connection Request</h3>
+	<hr><br>
+	
+	<div class='row-fluid'>
+		<div class='span12'>
+			<?php
+			if(!$this->err){
+			?>
+			<div class='alert alert-info'> 
+				<h4>Click below to accept the connection from <?=$this->trainer->first_name?> <?=$this->trainer->last_name?></h4>
+			</div>
+
+			<a href='<?=HTTP.WWW_ROOT?>/user/account/accept-trainer/code/<?=sha1($this->code->id)?>' class='btn btn-primary btn-large'>Yes, Confirm Connection</a>
+		
+			<?php
+			}
+			else{
+				echo "<div class='alert alert-danger'><h3>{$this->err}</h3><div>";
+			}			
+			?>
+		</div>		
+	</div>
+	
+</div>
+
+

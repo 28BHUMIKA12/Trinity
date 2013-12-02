@@ -1,0 +1,27 @@
+<div class='span12'>
+
+<h3>You Are About To Delete Question '<?=$this->question->title?>' Permanently.</h3>
+<hr><br>
+	<div class='row-fluid'>
+			<div class='row-fluid'>
+				<div class='span12 '>
+					<div class='alert alert-danger'>
+						<h4>WARNING : This will permanently delete the question and data associated with it. Are you sure?			
+						</h4>
+					</div>
+				</div>		
+			</div>
+			
+			<div class='row-fluid'>
+				<div class='span12'>
+					<hr>
+				</div>
+			</div>
+
+			<a href='<?=HTTP.WWW_ROOT?>/admin/quiz/delete/id/<?=$this->question->id?>' class='btn btn-danger'>Yes, Delete Quiz Question</a>		
+			<a href='<?=HTTP.WWW_ROOT?>/admin/quiz/list' class='btn btn'>Cancel</a>		
+	</div>
+
+</div>
+
+

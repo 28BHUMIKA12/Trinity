@@ -1,0 +1,219 @@
+<div class='span12 white-panel'>
+	<a href='<?=HTTP.WWW_ROOT?>/user/account/change-password' class='btn btn-danger pull-right'>Change Password</a>
+	
+	<h3>
+		Your Profile.
+	</h3>
+	<hr>		
+	
+	<div class='row-fluid'>
+		
+		<form  method='post'  action='' enctype='multipart/form-data'>		
+			<?php
+			if($this->err){
+				echo "<div class='alert alert-error'>{$this->err}</div>";
+			}
+			?>
+		
+			<div class='row-fluid'>
+				<div class='span12 '>
+					
+		 			<div class='span3'>
+		
+						<div class="control-group">
+							<div class="controls">						
+								<div class="fileupload fileupload-new" data-provides="fileupload">
+									<div class="fileupload-new thumbnail" style="width: 150px; height: 150px;">
+										<img src="<?=HTTP.WWW_ROOT?>/uploads/<?=$this->user->pic?>" />
+									</div>
+									<div class="fileupload-preview fileupload-exists thumbnail" 
+										style="max-width: 150px; max-height: 150px; line-height: 20px;">
+									</div>
+									<div>
+										<span class="btn btn-file btn-mini">
+											<span class="fileupload-new"><i class='icon icon-user'></i> Profile Image</span>
+											<span class="fileupload-exists"><i class='icon icon-edit'></i> Change</span>
+											<input type="file" name='image'/>
+										</span>
+										<a href="#" class="btn btn-mini fileupload-exists" data-dismiss="fileupload">
+											<i class='icon icon-remove'></i> Remove
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
+		
+					<div class='span3'>
+					
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="Email cannot be changed" type="text" name='email' required readonly placeholder="Email … " value="<?=$this->user->email?>"></p>			
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="First Name" type="text" name='first_name' required placeholder="First Name … " value="<?=$this->user->first_name?>"></p>			
+						<p><input type="text" name='last_name' required placeholder="Last Name … " rel="tooltip" data-placement="top" data-trigger="hover" title="Last Name" value="<?=$this->user->last_name?>"></p>
+
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="Age" type="text" name='age'  placeholder="Age … " value="<?=$this->user->age?>"></p>
+						<p>
+						<span class='muted'>Specify Height:</span><br>
+						<select  name='height_feet' style='width:100px'>
+		            		<?php
+			            	$data = array(3,4,5,6,7,8);
+			            	foreach($data as $key=>$value){
+				        		if($this->user->height_feet == $value)
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value."'>".$value." Feet</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						<select  name='height_inches' style='width:100px'>
+		            		<?php
+			            	$data = array(0,1,2,3,4,5,6,7,8,9,10,11);
+			            	foreach($data as $key=>$value){
+				        		if($this->user->height_inches == $value)
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value."'>".$value." Inches</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						</p>
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="Weight in Lbs" type="text" name='weight_lbs'  placeholder="weight in lbs … " value="<?=($this->user->weight_lbs)?>"></p>
+						<p>
+							<?php
+							$gender = array('Male', 'Female');
+							$Male = $Female = '';
+							foreach($gender as $key=>$value){
+				        		if($this->user->gender == $value)
+				        			$$value = 'checked';
+				        			
+			   	        	}   	        	
+			   	        	?> 
+							<label class="radio inline">
+							<input required <?=$Male?> type="radio" name="gender"  value="Male" >
+								Male
+							</label>
+							
+							<label class="radio inline">
+							<input required <?=$Female?> type="radio" name="gender" value="Female">
+								Female
+							</label>
+						</p>
+						
+			
+					</div>
+					<div class='span3'>
+					
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="Mobile" type="text" name='mobile'  placeholder="Mobile … " value="<?=$this->user->mobile?>"></p>
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="Street Address" type="text" name='address'  placeholder="street address" value="<?=$this->user->address?>"></p>
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="Zipcode" type="text" name='zip' placeholder="zipcode" value="<?=$this->user->zip?>"></p>
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="City" type="text" name='city'  placeholder="city" value="<?=$this->user->city?>"></p>
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="State" type="text" name='state'  placeholder="state" value="<?=$this->user->state?>"></p>
+						<p><input rel="tooltip" data-placement="top" data-trigger="hover" title="Country" disabled type="text" name='country'  placeholder="country" value="USA"></p>
+						
+					</div>
+					
+					<div class='span3'>
+						<span class='muted'>Training Hrs per week:</span><br>
+						
+						<select  name='training_hrs_per_week' required style='width:100px'>
+		            		<?php
+			            	$data = array(1,2,3,4,5,6,7,8,9,10);
+			            	foreach($data as $key=>$value){
+				        		if($this->user->training_hrs_per_week == $value)
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value."'>".$value."</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						</p>			
+						<p>
+						<span class='muted'>Goal:</span><br>
+						<select  name='goal' id='goal'>
+		            		<?php
+			            	$data = $this->goal->fetchAll($this->goal->select()->order(array('name asc')));
+			            	foreach($data as $key=>$value){
+				        		if($this->user->goal == $value['name'])
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value['name']."'>".$value['name']."</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						</p>
+						<p>
+						<span class='muted'>Body Type:</span><br>
+						<select  name='body_type' id='body_type'>
+		            		<?php
+			            	$data = $this->body_type->fetchAll($this->body_type->select()->order(array('name asc')));
+			            	foreach($data as $key=>$value){
+				        		if($this->user->body_type == $value['name'])
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value['name']."'>".$value['name']."</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						</p>
+										
+					</div>
+				</div>		
+			</div>
+			
+			<div class='row-fluid'>
+				<div class='span12'>
+					<hr>
+				</div>
+			</div>
+			
+			<div>
+				<div class='span3'></div>
+				<div class='span9'>
+				
+					<div class='text text-info'>
+						<small>If you have changed your Age, Height, Weight, Sex, Training Hrs, Goal or Body type, your target calories have changed. If you want the default meal plan to be regenerated, please check the option 'Regenerate My Meal Plan' below.
+						</small>
+					</div>		
+					
+					<div class="control-group">
+						<div class="controls span4 input-prepend input-append">
+							<label class="checkbox">
+								<input type="checkbox" <?=$tncChecked?> name="update_my_meal" value="1">
+								Regenerate My Meal Plan <small class='text text-success'>(Only Default Plan will be regenerated)</small>
+							</label>
+						</div>	
+					</div>		
+				</div>
+			</div>
+			
+			<div class='row-fluid'>
+				<div class='span12'>
+					<hr>
+				</div>
+			</div>
+			
+			<div>
+				<div class='span3'></div>
+				<div class='span9'>
+
+					<button type="submit" class="btn btn-primary btn-large center"> <i class="icon icon-edit icon-white "></i> Update </button>
+				</div>
+		
+			</div>
+										
+		</form>
+		
+	</div>
+</div>
+
+
+

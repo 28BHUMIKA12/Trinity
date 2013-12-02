@@ -1,0 +1,46 @@
+<div class='row-fluid'>
+
+	<div class='span5'>
+		<div id="myCarousel" class="carousel slide thumbnail">
+			<!-- Carousel items -->
+			<div class="carousel-inner">
+			    <div class="active item">
+			    	<img class='' src='<?=HTTP.WWW_ROOT?>/res/img/build-muscle-fast.jpg'>		    
+			        <div class="carousel-caption">
+			          <h1>Health Is Wealth</h1>
+			        </div>
+			    </div>
+			    <div class="item">
+			    	<img class=''  src='<?=HTTP.WWW_ROOT?>/res/img/muscle-building-food-supplements.jpg'>		    
+			        <div class="carousel-caption">
+			          <h1>Create A Perfect Meal</h1>
+			        </div>
+			    </div>
+			    <div class="item">
+			    	<img class=''  src='<?=HTTP.WWW_ROOT?>/res/img/eating-for-muscle-building2.jpg'>		    
+			        <div class="carousel-caption">
+			          <h1>Ask Our Expertise</h1>
+			        </div>
+			    </div>
+			</div>
+			<!-- Carousel nav -->
+			<a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+			<a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+		</div>
+		
+		<?php
+		if(!Zend_Auth::getInstance()->hasIdentity()){
+		?>
+		<a href='<?=HTTP.WWW_ROOT?>/visitor/register' class='btn pull-right btn-danger'>Register For Free <i class='icon-chevron-right'></i></a>
+		<?php
+		}
+		?>
+	</div>
+	
+	<div class='span7'>
+	
+		
+	
+	</div>
+</div>
+

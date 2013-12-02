@@ -1,0 +1,60 @@
+<script type="text/javascript" src="/js/dojo/dojo/dojo.js"></script>
+<script type="text/javascript" src="/js/dojo/dojo/base.js"></script>
+<script type="text/javascript" src="/js/dojo/dojo/chart.js"></script>
+<script type="text/javascript">
+//<!--
+dojo.require("dojox.charting.Chart2D");
+    dojo.require("dojox.charting.themes.Claro");
+    dojo.require("dojox.charting.widget.Legend");
+    dojo.require("dojo.store.Memory");
+    dojo.require("dojox.charting.StoreSeries");
+    dojo.require("dojo.data.ItemFileReadStore");
+dojo.addOnLoad(			
+	function () {
+			// remove all fouc classes
+			dojo.query(".fouc").removeClass("fouc");
+			// make loadingFOUC class hidden
+			dojo.query(".loadingFOUC").addClass("hidden");
+		}
+	);
+dojo.addOnLoad(function () {
+var url = "/default/sidebar/waterintake/format/html";
+var targetNode = dojo.byId("water-intake");
+
+dojo.connect(dijit.byId('waterIntake'), 'onChange', function (value) {
+var xhrArgs = {
+url: url,
+handleAs: "text",
+content: {
+intake: value,
+},
+error: function(error) {
+targetNode.innerHTML = "Unable to save actual water usage. Please make sure cookies are enabled. " + error;
+}
+}
+dojo.xhrPost(xhrArgs);
+});
+}
+);
+//-->
+
+</script>    <script type="text/javascript">
+    //<!--
+dojo.addOnLoad(function () {
+	var chartData = [{"id":1,"value":2870,"site":1},{"id":2,"value":2925,"site":2},{"id":3,"value":175,"site":3},{"id":4,"value":2254,"site":1},{"id":5,"value":2274,"site":2},{"id":6,"value":220,"site":3},{"id":7,"value":2215,"site":1},{"id":8,"value":2274,"site":2},{"id":9,"value":220,"site":3},{"id":10,"value":0,"site":1},{"id":11,"value":2274,"site":2},{"id":12,"value":220,"site":3},{"id":13,"value":2198,"site":1},{"id":14,"value":2274,"site":2},{"id":15,"value":220,"site":3},{"id":16,"value":2198,"site":1},{"id":17,"value":2274,"site":2},{"id":18,"value":220,"site":3},{"id":19,"value":2198,"site":1},{"id":20,"value":2274,"site":2},{"id":21,"value":220,"site":3},{"id":22,"value":1565,"site":1},{"id":23,"value":1602,"site":2},{"id":24,"value":170,"site":3},{"id":25,"value":2376,"site":1},{"id":26,"value":2414,"site":2},{"id":27,"value":170,"site":3},{"id":28,"value":0,"site":1},{"id":29,"value":2414,"site":2},{"id":30,"value":170,"site":3},{"id":31,"value":0,"site":1},{"id":32,"value":2414,"site":2},{"id":33,"value":170,"site":3},{"id":34,"value":0,"site":1},{"id":35,"value":2454,"site":2},{"id":36,"value":175,"site":3},{"id":37,"value":2681,"site":1},{"id":38,"value":2771,"site":2},{"id":39,"value":180,"site":3},{"id":40,"value":1643,"site":1},{"id":41,"value":1613,"site":2},{"id":42,"value":180,"site":3},{"id":43,"value":1643,"site":1},{"id":44,"value":1703,"site":2},{"id":45,"value":200,"site":3},{"id":46,"value":1666,"site":1},{"id":47,"value":1613,"site":2},{"id":48,"value":180,"site":3},{"id":49,"value":1643,"site":1},{"id":50,"value":1703,"site":2},{"id":51,"value":200,"site":3},{"id":52,"value":1657,"site":1},{"id":53,"value":1638,"site":2},{"id":54,"value":180,"site":3},{"id":55,"value":1637,"site":1},{"id":56,"value":1638,"site":2},{"id":57,"value":180,"site":3}];
+	var store = new dojo.store.Memory({data: {identifier: "id", items: chartData}});
+	var chart = new dojox.charting.Chart2D('progresschart');
+	chart.setTheme(dojox.charting.themes.Claro);
+	chart.addAxis("date", {minorTicks: false, majorTickStep: 1, labels: [{value: 0,text:""},{value:1,text:"1/3"},{value:2,text:"4/17"},{value:3,text:"5/24"},{value:4,text:"5/24"},{value:5,text:"5/29"},{value:6,text:"5/29"},{value:7,text:"6/2"},{value:8,text:"6/23"},{value:9,text:"6/23"},{value:10,text:"6/23"},{value:11,text:"6/23"},{value:12,text:"6/23"},{value:13,text:"6/25"},{value:14,text:"6/26"},{value:15,text:"6/26"},{value:16,text:"6/26"},{value:17,text:"6/26"},{value:18,text:"7/20"},{value:19,text:"7/22"},{value: 11,text:""}]});
+	chart.addAxis("calories", {vertical: true, majorTickStep: 100, minorTickStep: 25, title: "Calories", min: -500, max: 3400});
+	chart.addAxis("weight", {vertical: true, title: "Weight", min: 80, max: 190, leftBottom: false});
+	chart.addPlot('actual', {type: "Lines", hAxis: "date", tension: "S", vAxis: "weight", markers: true});
+	chart.addPlot('calories', {type: "ClusteredColumns", hAxis: "date", vAxis: "calories", stroke: {width: 1}, gap: 5, animate: {duration: 1800}});
+    chart.addSeries("Actual Calories", new dojox.charting.StoreSeries(store, {query: {site: 1}}, "value"), {plot: "calories"});
+    chart.addSeries("Goal Calories", new dojox.charting.StoreSeries(store, {query: {site: 2}}, "value"), {plot: "calories"});
+    chart.addSeries("Weight", new dojox.charting.StoreSeries(store, {query: {site: 3}}, "value"),{plot: "actual", fill: "#ff000", stroke: {width:3}});
+    chart.render();
+    var legend = new dojox.charting.widget.Legend({chart: chart},"legend");
+});
+    //-->
+</script>

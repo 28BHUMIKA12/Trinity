@@ -1,0 +1,774 @@
+<hr>
+<div class='row-fluid'>
+
+	<div class='span4'>
+		<i class='icon icon-arrow-left'></i> <a href='<?=HTTP.WWW_ROOT?>/admin/users/edit-account/id/<?=$this->parent->id?>'>View Account Holder Details.</a> 
+		<br><br>
+		<i class='icon icon-arrow-left'></i> <a href='<?=HTTP.WWW_ROOT?>/admin/users/sub-list/id/<?=$this->parent->id?>'>View All Profiles Of <?=$this->parent->email?></a>
+		<br><br>
+		<hr>
+		<?php
+		if($this->user->is_deleted == '0'){
+		?>
+		<a href='<?=HTTP.WWW_ROOT?>/admin/users/confirm-delete-profile/id/<?=$this->user->id?>' class='btn btn-small btn-danger'><i class='icon-remove'></i> Delete This Profile</a>
+		<?php
+		}
+		else{
+		?>
+		<a href='<?=HTTP.WWW_ROOT?>/admin/users/undelete-profile/id/<?=$this->user->id?>' class='btn btn-small btn-success'><i class='icon-ok'></i> UnDelete This Profile</a>
+		
+		<?php
+		}
+		?>
+	</div>
+	<div class='span8 '>
+		<p class='muted'>Below you can send email to the Owner of this Profile. You can send reasons for Moderation Fail, Moderation Pass, Payment resolution or any other message. Simply type-in the message below and hit submit. </p>
+		<form action="" class='well' method="post">
+			<?php
+				if($this->email_msg){
+					echo "<div class='alert alert-success'>{$this->email_msg}</div>";
+				}
+			?>
+			<p class='muted'>Dear <?=$this->parent->first_name?></p>
+			<textarea class='span8' required name='message' placeholder='Please use plain text not HTML ...'></textarea>
+			<p class='muted'>Thanks,<br><?=APP_NAME?></p>
+			<br>
+			<input type="submit" class='btn btn-primary' name='submit_message' value="Send Email">
+		</form>
+	</div>
+</div>
+
+<h3>Details of <?=$this->user->first_name?> <?=$this->user->last_name?> </h3>
+<div class='pull-right muted'>
+Moderation Status = 
+<?php
+
+if($this->user->is_awaiting_moderation)
+	echo "FAILED";
+else
+	echo "PASSED";
+?>
+</div>
+<hr>
+
+<div class='row-fluid'>
+	<div class='span4'>
+		<?php
+		if($this->user->pic){
+		?>
+			<img class='thumbnail' src='<?=HTTP.WWW_ROOT.'/res/uploads/thumb/big/'.$this->user->pic?>'>
+			<br>
+			<div><a href='<?=HTTP.WWW_ROOT?>/admin/users/view/main/26/id/44/x/delmainimg' class='btn btn-danger'>Delete Image</a></div>
+			<hr>
+		<?php
+		}
+		else{
+			if($this->err){
+				echo "<div class='alert alert-danger'>".$this->err."</div>";
+			}
+			echo "Upload Main Image:<br><form action='' method='post' enctype='multipart/form-data'><input type='file' name='image'><br><input type='submit' value='Upload' class='btn'></form>";
+		}
+		$photo = new Model_DbTable_Users_Photos;
+		$photo_data = $photo->fetchAll("users_id='".$this->user->id."'");
+		
+		if(count($photo_data))
+		foreach($photo_data as $key=>$value){
+			echo "<img class='thumbnail' src='".HTTP.WWW_ROOT.'/res/uploads/thumb/big/'.$value['file']."'>";
+			
+		}
+		?>
+	</div>
+
+	<div class='span8 well'>
+		
+		<form action="" method="post">
+		<?php
+			if($this->err)
+				echo "<div class='alert alert-danger'>{$this->err}</div>";
+		?>
+		<input type="hidden" name='id' value="<?=$this->user->id?>">
+		<table cellpadding="10"  >
+			<tr>
+				<td>
+					<h4>Code : </h4>
+				</td>
+				<td>
+					<input name='code' type='text' value='<?=$this->user->code?>'>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>About me: </h4>
+				</td>
+				<td>
+					<textarea name='description' style='width:500px'><?=stripslashes($this->user->description)?></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Gender:</h4>
+				</td>
+				<td>
+					<?php
+		        	$gender = array('Male', 'Female');
+					foreach($gender as $key=>$value){
+		        		if($this->user->gender == $value)
+		        			$r[$value] = 'Checked';
+		        		else
+		        			$r[$value] = '';
+	   	        	}   	        	
+	   	        	?>    
+					
+					<input required type="radio" <?=$r['Male']?> name="gender" id="gender" value="Male"/> Male
+					<input required type="radio" <?=$r['Female']?> name="gender" id="gender" value="Female" /> Female
+								
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<h4>First Name : </h4>
+				</td>
+				<td>
+					<input name='first_name' type='text' value='<?=$this->user->first_name?>'>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Last Name : </h4>
+				</td>
+				<td>
+					<input name='last_name' type='text' value='<?=$this->user->last_name?>'>
+				</td>
+			</tr>
+			<?php
+				$dob_arr = explode(' ',$this->user->dob);
+			?>
+			<tr>
+				<td colspan="2">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Dob:</h4>
+				</td>
+				<td>
+					<span style='color:#aaa'>Day</span>
+					<select name='dob_day' style="width:100px;">
+						<?php
+							for($i=1;$i<32;$i++){
+								if($dob_arr[0] == $i)
+									$selected = 'selected';
+								else
+									$selected = '';
+								echo " <option {$selected} value='".$i."'>{$i}</option>";
+							}
+						?>
+					</select>
+					<span style='color:#aaa'>Month</span>
+					<select name='dob_month' style="width:100px;">
+						<?php	
+							$month = array(
+								'1'=>'Jan','2'=>'Feb','3'=>'March','4'=>'April',
+								'5'=>'May','6'=>'June','7'=>'July','8'=>'August',
+								'9'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Dec'
+								);
+							foreach($month as $key=>$value){
+								if($dob_arr[1] == $value)
+									$selected = 'selected';
+								else
+									$selected = '';
+								
+								echo " <option {$selected} value='".$value."'>{$value}</option>";
+							}
+						?>
+					</select>
+					
+					<span style='color:#aaa'>Year</span>
+					<select name='dob_year' style="width:100px;">
+						<?php
+							for($i=1950;$i<2013;$i++){
+								if($dob_arr[2] == $i)
+									$selected = 'selected';
+								else
+									$selected = '';
+								echo " <option {$selected} value='".$i."'>{$i}</option>";
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Date OF Birth:</h4>
+				</td>
+				<td>
+					<span style='color:#aaa'>Hours</span><select style="width:100px;" name='time_of_birth_hr'>
+						<?php	
+							$hr = array(
+								1,2,3,4,5,6,7,8,9,10,11,12
+							);
+							
+							foreach($hr as $key=>$value){
+								if($this->user->time_of_birth_hr == $value)
+									$selected = 'selected';
+								else
+									$selected = '';
+								
+								echo " <option {$selected} value='".$value."'>{$value}</option>";
+							}
+						?>
+					</select>
+					
+					<span style='color:#aaa'>Minutes</span><select style="width:100px;" name='time_of_birth_min'>
+						<?php
+							for($i=0;$i<61;$i++){
+								if($this->user->time_of_birth_min == $i)
+									$selected = 'selected';
+								else
+									$selected = '';
+								echo " <option {$selected} value='".$i."'>{$i}</option>";
+							}
+						?>
+					</select>
+					<span style='color:#aaa'>AM/PM</span><select style="width:100px;" name='ampm'>
+						<?php	
+							$ampm = array(
+								'AM','PM'
+							);
+							
+							foreach($ampm as $key=>$value){
+								if($this->user->ampm == $value)
+									$selected = 'selected';
+								else
+									$selected = '';
+								
+								echo " <option {$selected} value='".$value."'>{$value}</option>";
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+                
+			<tr>
+				<td>
+					<h4>Place Of Birth : </h4>
+				</td>
+				<td>
+				<input required type="text" name="place_of_birth" id='place_of_birth' placeholder='place of birth ...' value="<?=$this->user->place_of_birth?>"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Disability If Any : </h4>
+				</td>
+				<td>
+					<input type='text' class='span10' name='disability_description' value='<?=$this->user->disability_description?>'>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Age :</h4>
+				</td>
+				<td>
+					<?=$this->user->age?>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Mobile : </h4>
+				</td>
+				<td>
+					<input name='mobile' type='text' value='<?=$this->user->mobile?>'>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Mother Tongue:</h4>
+				</td>
+				<td>
+					<select required name='mother_tongue' id='mother_tongue' style='width:200px;'>
+	            		<?php
+		            	$ObjMotherTongue = new Model_DbTable_Mother_Tongue;
+		            	$mother_tongue_arr = $ObjMotherTongue->fetchAll($ObjMotherTongue->select()->order(array('name asc')));
+		            	foreach($mother_tongue_arr as $key=>$value){
+			        		if($this->user->mother_tongue == $value['name'])
+			        			$r[$value['name']] = 'Selected';
+			        		else
+			        			$r[$value['name']] = '';
+			        		
+			        		if(trim($value['name']))
+								echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+		   	        	}   	        	
+		   	        	?>    
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Religion:</h4></td>
+				<td>
+				<select required name='religion' id='religion' style='width:200px;' onChange="getCaste(this.value)">
+            		<?php
+	            	$ObjReligion = new Model_DbTable_Religion;
+	            	$religion_arr = $ObjReligion->fetchAll($ObjReligion->select()->order(array('name asc')));
+	            	foreach($religion_arr as $key=>$value){
+		        		if($this->user->religion == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Caste:</h4></td>
+				<tD>
+				<select name='caste' id='caste' style='width:200px;'>
+            		<?php
+	            	$ObjCaste = new Model_DbTable_Caste;
+	            	$caste_arr = $ObjCaste->fetchAll($ObjCaste->select()->where("religion_name='".$this->user->religion."'")->order(array('name asc')));
+	            	foreach($caste_arr as $key=>$value){
+		        		if($this->user->caste == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+           		
+				</TD>
+			</tr>
+			<tr>
+				<td>
+					<h4>Country:</h4>
+				</td>
+				<td>
+				<select  name='country' id='country' style='width:200px;' onChange="getState(this.value)">
+            		<?php
+	            	$ObjCountry = new Model_DbTable_Country;
+	            	$country_arr = $ObjCountry->fetchAll($ObjCountry->select()->order(array('name asc')));
+	            	foreach($country_arr as $key=>$value){
+		        		if($this->user->country == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>State:</h4>
+				</td>
+				<td>
+					<select  name='state' id='state' style='width:200px;' onChange="getCity(this.value)">
+            		<?php
+	            	$ObjState = new Model_DbTable_State;
+	            	$state_arr = $ObjState->fetchAll($ObjState->select()->where("country='".$this->user->country."'")->order(array('name asc')));
+	            	foreach($state_arr as $key=>$value){
+		        		if($this->user->state == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+					</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>City:</h4>
+				</td>
+				<td>
+					<select  name='city' id='city' style='width:200px;'>
+            		<?php
+	            	$ObjCity = new Model_DbTable_City;
+	            	
+	            	$city_arr = $ObjCity->fetchAll(
+	            		$ObjCity->select()
+	            			->where("state='".$this->user->state."' and country='".$this->user->country."'")
+	            			->order(array('name asc'))
+	            	);
+	            	
+	            	foreach($city_arr as $key=>$value){
+		        		if($this->user->city == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h4>Height:</h4>
+				</td>
+				<td>
+					<select  name='height' id='height' style='width:80px;'>
+            		<?php
+	            	$height_arr = array('4.5','4.6','4.7','4.8','4.9','4.10','4.11','4.12','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','5.10','5.11','5.12','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','6.10','6.11','6.12');
+	            	foreach($height_arr as $key=>$value){
+		        		if($this->user->height == $value)
+		        			$r = 'Selected';
+		        		else
+		        			$r = '';
+		        		echo "<option ".$r." value='".$value."'>".$value."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+				</td>
+			</tr>
+			<tr>
+  		    <td colspan="2">
+					<hr>
+				</td>
+			</tr>
+
+			<tr>
+				<td >
+				
+				<?php
+				$marital_status = array('Never_Married','Widowed','Awaiting_Divorced');
+				foreach($marital_status as $key=>$value){
+	        		if($this->user->marital_status == $value)
+	        			$r[$value] = 'Checked';
+	        		else
+	        			$r[$value] = '';
+   	        	}   	        	
+   	        	?>    
+				
+				<h4>Marital Status:</h4>
+				</td>
+				<td> 
+				<input  required type="radio" <?=$r['Never_Married']?> name="marital_status" id="marital_status" value="Never_Married"/> Never Married
+				<input required type="radio" <?=$r['Widowed']?> name="marital_status" id="marital_status" value="Widowed"/> Widowed
+				<input required type="radio" <?=$r['Awaiting_Divorced']?> name="marital_status" id="marital_status" value="Awaiting_Divorced"/> Awaiting Divorced
+                
+				</td>
+			</tr>
+			<tr>
+				<td>
+				<h4>Complexion:</h4>
+				
+				</td>
+				<td>
+				<?php
+				$complexion = array('Very_Fair', 'Fair','Wheatish','Dark');
+				foreach($complexion as $key=>$value){
+	        		if($this->user->complexion == $value)
+	        			$r[$value] = 'Checked';
+	        		else
+	        			$r[$value] = '';
+   	        	}   	        	
+   	        	?>    
+				
+				<input required type="radio"<?=$r['Very_Fair']?>  name="complexion" id="complexion" value="Very_Fair"/> Very Fair
+				<input required type="radio" <?=$r['Fair']?> name="complexion" id="complexion" value="Fair"/> Fair
+				<input required type="radio" <?=$r['Wheatish']?> name="complexion" id="complexion" value="Wheatish"/> Wheatish
+				<input required type="radio" <?=$r['Dark']?> name="complexion" id="complexion" value="Dark"/> Dark
+                
+				
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Body Type:</h4></td>
+				<td>
+					<?php
+					$body_type = array('Slim', 'Athletic','Average','Heavy');
+					foreach($body_type as $key=>$value){
+		        		if($this->user->body_type == $value)
+		        			$r[$value] = 'Checked';
+		        		else
+		        			$r[$value] = '';
+	   	        	}   	        	
+	   	        	?>    
+					<input required type="radio" <?=$r['Slim']?> name="body_type" id="body_type" value="Slim"/> Slim
+					<input required type="radio" <?=$r['Athletic']?> name="body_type" id="body_type" value="Athletic"/> Athletic
+					<input required type="radio" <?=$r['Average']?> name="body_type" id="body_type" value="Average"/> Average
+					<input required type="radio" <?=$r['Heavy']?> name="body_type" id="body_type" value="Heavy"/> Heavy
+                </td>
+			</tr>
+			
+			<Tr>
+				<Td>
+					<h4>Manglik:</h4>
+				</TD>
+				<td>
+					<?php
+					$is_manglik = array('Yes', 'No','Dont_Know');
+					foreach($is_manglik as $key=>$value){
+		        		if($this->user->is_manglik == $value)
+		        			$r[$value] = 'Checked';
+		        		else
+		        			$r[$value] = '';
+	   	        	}   	        	
+	   	        	?>    
+					<input required type="radio" <?=$r['No']?> name="is_manglik" id="is_manglik" value="No"/> No
+					<input required type="radio" <?=$r['Yes']?> name="is_manglik" id="is_manglik" value="Yes"/> Yes
+					<input required type="radio" <?=$r['Dont_Know']?> name="is_manglik" id="is_manglik" value="Dont_Know"/> Dont Know
+				</td>
+			</TR>
+			<tr>
+				<td><h4>Diet:</h4></td>
+				<td>
+				<?php
+				$diet = array('Veg','Non-Veg','Eggetarian','Jain','Vegan');
+				foreach($diet as $key=>$value){
+	        		if($this->user->diet == $value)
+	        			$r[$value] = 'Checked';
+	        		else
+	        			$r[$value] = '';
+   	        	}   	        	
+   	        	?>    
+				<input required type="radio" <?=$r['Veg']?> name="diet" id="diet" value="Veg"/> Veg
+				<input required type="radio" <?=$r['Non-Veg']?> name="diet" id="diet" value="Non-Veg"/> Non-Veg
+				<input required type="radio" <?=$r['Eggetarian']?> name="diet" id="diet" value="Eggetarian"/> Eggetarian
+				<input required type="radio" <?=$r['Jain']?> name="diet" id="diet" value="Jain"/> Jain
+				<input required type="radio" <?=$r['Vegan']?> name="diet" id="diet" value="Vegan"/> Vegan
+				
+				</td>
+			</tr>
+			
+			<tr>
+				<td><h4>Smoke:</h4></td>
+				<td>
+				<?php
+				$smoke = array('No','Occasionally','Yes');
+				foreach($smoke as $key=>$value){
+	        		if($this->user->smoke == $value)
+	        			$r[$value] = 'Checked';
+	        		else
+	        			$r[$value] = '';
+   	        	}   	        	
+   	        	?>    
+				<input required type="radio" <?=$r['No']?>  name="smoke" id="smoke" value="No"/> No
+				<input required type="radio" <?=$r['Occasionally']?> name="smoke" id="smoke" value="Occasionally"/> Occasionally
+				<input required type="radio" <?=$r['Yes']?> name="smoke" id="smoke" value="Yes"/> Yes
+				
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Drink:</h4></td>
+				<td>
+				<?php
+				$smoke = array('No','Occasionally','Yes');
+				foreach($smoke as $key=>$value){
+	        		if($this->user->smoke == $value)
+	        			$r[$value] = 'Checked';
+	        		else
+	        			$r[$value] = '';
+   	        	}   	        	
+   	        	?>    
+				<input required type="radio" <?=$r['No']?>  name="drink" id="drink" value="No"/> No
+				<input required type="radio" <?=$r['Occasionally']?> name="drink" id="drink" value="Occasionally"/> Occasionally
+				<input required type="radio" <?=$r['Yes']?> name="drink" id="drink" value="Yes"/> Yes
+				
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<hr>
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Education Level:</h4></td>
+				<td>
+				<select required name='education_level' id='education_level' style='width:200px;'>
+            		<?php
+	            	$ObjEducationLevel = new Model_DbTable_Education_Level;
+	            	$education_level_arr = $ObjEducationLevel->fetchAll()->toArray();
+	            	foreach($education_level_arr as $key=>$value){
+		        		if($this->user->education_level == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+
+				</td>
+			</tr>
+			
+			<tr>
+				<td><h4>Education Field:</h4></td>
+				<td>
+				<select required name='education_field' id='education_field' style='width:200px;'>
+            		<?php
+	            	$ObjEducationField = new Model_DbTable_Education_Field;
+	            	$education_field_arr = $ObjEducationField->fetchAll($ObjEducationField->select()->order(array('name asc')));
+	            	foreach($education_field_arr as $key=>$value){
+		        		if($this->user->education_field == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Working At Level:</h4></td>
+				<td>
+				<select required name='working_as' id='working_as' style='width:200px;'>
+            		<?php
+	            	$ObjWorkingAs = new Model_DbTable_Working_As;
+	            	$working_as_arr = $ObjWorkingAs->fetchAll()->toArray();
+	            	foreach($working_as_arr as $key=>$value){
+		        		if($this->user->working_as == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+						echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+
+				
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Annual Income:</h4></td>
+				<td>
+				<select required name='annual_income' id='annual_income' style='width:200px;'>
+            		<?php
+	         		$annual_income = array('Less than 2,00,000', '2,00,000 - 5,00,000','5,00,000 - 10,00,000','10,00,000 - 15,00,000','More than 15,00,000','Will tell you later');
+					foreach($annual_income as $key=>$value){
+		        		if($this->user->annual_income == $value)
+		        			$r[$value] = 'Selected';
+		        		else
+		        			$r[$value] = '';		        		
+						echo "<option ".$r[$value]." value='".$value."'>".$value."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Family Status:</h4></td>
+				<td>
+				<select required name='family_status' id='family_status' style='width:200px;'>
+            		<?php
+	            	$ObjFamilyStatus = new Model_DbTable_Family_Status;
+	            	$family_status_arr = $ObjFamilyStatus->fetchAll($ObjFamilyStatus->select()->order(array('id asc')));
+	            	foreach($family_status_arr as $key=>$value){
+		        		if($this->user->family_status == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+				
+				</td>
+			</tr>
+			
+			<tr>
+				<Td><h4>Family Type:</h4></TD>
+				<td>
+				<select required name='family_type' id='family_type' style='width:200px;'>
+            		<?php
+	            	$ObjFamilyType = new Model_DbTable_Family_Type;
+	            	$family_type_arr = $ObjFamilyType->fetchAll($ObjFamilyType->select()->order(array('name asc')));
+	            	foreach($family_type_arr as $key=>$value){
+		        		if($this->user->family_type == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+				
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Family Values:</h4></td>
+				<td>
+				<select required name='family_values' id='family_values' style='width:200px;'>
+            		<?php
+	            	$ObjFamilyValues = new Model_DbTable_Family_Values;
+	            	$family_values_arr = $ObjFamilyValues->fetchAll($ObjFamilyValues->select()->order(array('name asc')));
+	            	foreach($family_values_arr as $key=>$value){
+		        		if($this->user->family_values == $value['name'])
+		        			$r[$value['name']] = 'Selected';
+		        		else
+		        			$r[$value['name']] = '';
+		        		
+		        		if(trim($value['name']))
+							echo "<option ".$r[$value['name']]." value='".$value['name']."'>".$value['name']."</option>";
+	   	        	}   	        	
+	   	        	?>    
+				</select>
+				
+				</td>
+			</tr>
+		</table>
+		<hr>
+		
+		<div>
+			<input  class='btn btn-primary' name='update' type="submit" value="Update Profile">
+		</div>
+		</form>
+		<div class='pull-right'>
+		<a class='btn btn-success ' href='<?=HTTP.WWW_ROOT?>/admin/users/moderation/set/pass/main/<?=$this->parent->id?>/id/<?=$this->user->id?>' ><i class='icon-thumbs-up icon-white'></i> Set Moderate Pass</a>
+					
+		<a class='btn btn-danger ' href='<?=HTTP.WWW_ROOT?>/admin/users/moderation/set/fail/main/<?=$this->parent->id?>/id/<?=$this->user->id?>' ><i class='icon-thumbs-down icon-white'></i> Set Moderate Fail</a>
+		</div>
+	</div>
+	
+</div>
+

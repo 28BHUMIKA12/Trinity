@@ -1,0 +1,103 @@
+<div class='span6 well'>
+<a href='<?=HTTP.WWW_ROOT?>/admin/items/add' class='btn btn-primary pull-right'><i class='icon icon-white icon-plus'></i> Add An Item </a>
+<h4>Main Items</h4>
+<small class='muted'><?=$this->total?> items found.</small>
+<hr>
+<?php
+$eat_grocery = $eat_restaurant = $eat_cookbook = '';
+if($this->t == Model_DbTable_Item::GROCERY)
+	$eat_grocery = 'active';
+if($this->t == Model_DbTable_Item::RESTAURANT)
+	$eat_restaurant = 'active';
+if($this->t == Model_DbTable_Item::COOKBOOK)
+	$eat_cookbook = 'active';
+?>
+<div class='row-fluid'>
+<div class='span12'>
+	<div class="btn-group" data-toggle="buttons-checkbox">
+		<a class="btn  <?=$eat_grocery?>" href='<?=HTTP.WWW_ROOT?>/admin/items/list/t/<?=Model_DbTable_Item::GROCERY?>'><?=Model_DbTable_Item::GROCERY?></a>
+		<a class="btn  <?=$eat_restaurant?>" href='<?=HTTP.WWW_ROOT?>/admin/items/list/t/<?=Model_DbTable_Item::RESTAURANT?>'><?=Model_DbTable_Item::RESTAURANT?></a>
+		<a class="btn  <?=$eat_cookbook?>" href='<?=HTTP.WWW_ROOT?>/admin/items/list/t/<?=Model_DbTable_Item::COOKBOOK?>'><?=Model_DbTable_Item::COOKBOOK?></a>
+	</div>
+</div>
+</div>
+<?php //echo $this->paginator; ?> 
+<br>
+<table class='table table-striped table-bordered'>
+	<tbody >
+		<th style='background-color:#ededed' >
+			Name
+		</th>
+		<th style='background-color:#ededed'>
+			Action
+		</th>
+		
+	</tbody>
+		<?php
+		
+		foreach($this->paginator as $key=>$value){
+		
+			echo "
+			<tr>
+				<td>
+					{$value->name}
+				</td>
+				<td class='span3'>
+					
+					<a class='btn' href='".HTTP.WWW_ROOT."/admin/items/edit/id/".$value->id."' ><i class='icon-edit'></i></a>
+					<a class='btn btn-danger' href='".HTTP.WWW_ROOT."/admin/items/delete-confirm/id/".$value->id."' ><i class='icon-remove icon-white'></i></a>
+					<a class='btn btn-info' href='".HTTP.WWW_ROOT."/admin/items/list/t/".$this->t."/parent_id/".$value->id."' ><i class='icon-arrow-right icon-white'></i></a>
+					
+				</td>
+				
+			</tr>";
+		
+		}
+		?>
+		
+</table>
+
+<?php //echo $this->paginator; ?>
+
+</div>
+<div class='span6 well muted'>
+<i class='icon icon-arrow-right'></i> <?=$this->itemData->name?> Child Items <br>
+<small class='muted'><?=$this->total?> items found.</small>
+<hr>
+<?php //echo $this->paginator; ?> 
+<br>
+<table class='table table-striped table-bordered'>
+	<tbody >
+		<th style='background-color:#ededed' >
+			Name
+		</th>
+		<th style='background-color:#ededed'>
+			Action
+		</th>
+		
+	</tbody>
+		<?php
+		if($this->paginatorChild)
+		foreach($this->paginatorChild as $key=>$value){
+		
+			echo "
+			<tr>
+				<td>
+					{$value->name}
+				</td>
+				<td class='span3'>
+					
+					<a class='btn' href='".HTTP.WWW_ROOT."/admin/items/edit/id/".$value->id."' ><i class='icon-edit'></i></a>
+					<a class='btn btn-danger' href='".HTTP.WWW_ROOT."/admin/items/delete/id/".$value->id."' ><i class='icon-remove icon-white'></i></a>
+				</td>
+				
+			</tr>";
+		
+		}
+		?>
+		
+</table>
+
+<?php //echo $this->paginator; ?>
+
+</div>

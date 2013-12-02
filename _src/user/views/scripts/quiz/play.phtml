@@ -1,0 +1,109 @@
+<div class='span12 white-panel'>
+	<div class='pull-right' id='time_elapsed'>
+	<?php
+		//echo "Time Elapsed (min:sec) = ".date('i:s',$this->total_time_played);
+		//echo $this->total_time_played;
+	?>
+	</div>
+	
+	<h2><?=ucfirst($this->q->title)?></h2>
+	<h3><?=ucfirst($this->q->description)?></h3>
+	<hr><br>
+	
+	<div class='row-fluid'>
+		<div class='span12'>
+			<form action="<?=HTTP.WWW_ROOT?>/user/quiz/submit" method="post">
+			<input type='hidden' name='answer_type' value='<?=$this->type?>'>
+			<input type='hidden' name='question_id' value='<?=$this->q->id?>'>
+			<?php
+				switch($this->type){
+					
+					case Model_DbTable_Answer::TEXT:
+						echo "<div class='alert alert-success'>Enter correct answer and hit submit!</div>";
+						echo "<input type='text' class='span4' name='answer'>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit' class='btn btn-info'></div></div>";
+						break;
+						
+					case Model_DbTable_Answer::IMAGESERIES:
+						echo "<div class='alert alert-success'>Select the correct image and submit</div>";
+						foreach ($this->a as $key=>$value){
+							echo "<img class='span2 thumbnail' src='".HTTP.WWW_ROOT."/uploads/".$value->data."'>";
+						}
+						$i=1;
+						echo "<div class='row-fluid'><div class='span12'><hr></div></div>";
+						echo "<select name='answer'>";
+						foreach ($this->a as $key=>$value){
+							echo "<option value='".$value->id."'>{$i}</option>";
+							$i++;
+						}
+						echo "</select>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit' class='btn btn-info'></div></div>";
+						
+						break;
+					case Model_DbTable_Answer::VIDEOSERIES:
+						echo "<div class='alert alert-success'>Select the correct image and submit</div>";
+						foreach ($this->a as $key=>$value){
+							echo "<div class='span2 thumbnail'><iframe 
+								src=".$value->data." 
+								width='200' 
+								height='150' 
+								frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen>
+							</iframe></div>";
+						}
+						$i=1;
+						echo "<div class='row-fluid'><div class='span12'><hr></div></div>";
+						echo "<select name='answer'>";
+						foreach ($this->a as $key=>$value){
+							echo "<option value='".$value->id."'>{$i}</option>";
+							$i++;
+						}
+						echo "</select>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit' class='btn btn-info'></div></div>";
+						
+						break;
+					
+						
+					case Model_DbTable_Answer::MULTICHECK:
+						echo "<div class='alert alert-success'>Select the correct answer and submit</div>";
+						foreach ($this->a as $key=>$value){
+							echo "<label class='radio'><input name='answer' value='".$value->id."' type='radio'>$value->data</label>";
+						}
+						echo "<hr><input type='submit' value='Submit' class='btn btn-info'>";
+						break;
+						
+					case Model_DbTable_Answer::TRUEFALSE:
+						echo "<div class='alert alert-success'>Specify if Question is TRUE or FALSE.</div>";
+						echo "<select name='answer'>";
+						echo "<option value='1'>True</option>";
+						echo "<option value='0'>False</option>";
+						echo "</select>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit' class='btn btn-info'></div></div>";
+						
+						break;
+					
+				}
+			?>
+			
+			</form>
+		</div>		
+	</div>
+	
+</div>
+
+
+<script>
+
+setInterval(function(){ 
+	$.ajax({
+		type:"post",
+		url:"<?=HTTP.WWW_ROOT?>/user/quiz/get-elapsed-time-ajax/",
+		datatype:"html",
+		success:function(data){
+			$('#time_elapsed').html(data);
+		}
+	});
+}, 1000);//time in milliseconds 
+
+
+</script>
+

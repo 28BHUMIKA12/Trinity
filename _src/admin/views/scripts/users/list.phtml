@@ -1,0 +1,160 @@
+<div class="btn-group pull-right" data-toggle="buttons-checkbox">
+	<a class="btn " href='<?=HTTP.WWW_ROOT?>/admin/users/list/type/all' >Show All</a>
+	<a class="btn " href='<?=HTTP.WWW_ROOT?>/admin/users/list/type/trainer'>Show Trainer</a>
+	<a class="btn " href='<?=HTTP.WWW_ROOT?>/admin/users/list/type/trainee'>Show Trainee</a>
+	<a class="btn btn-primary" href='<?=HTTP.WWW_ROOT?>/admin/users/create'><i class='icon icon-plus icon-white'></i> Add A Trainer</a>
+</div>		
+
+
+<h3><?=$this->type?></h3>
+<small class='muted'><?=$this->total?> user found. 
+</small>
+<hr>
+<?php echo $this->paginator; ?> 
+<br>
+<table class='table table-striped table-bordered'>
+	<tbody >
+		<th style='background-color:#ededed' >
+			Type
+		</th>
+		<th style='background-color:#ededed' >
+			Image
+		</th>
+		<th style='background-color:#ededed' >
+			Name
+		</th>
+		<th style='background-color:#ededed'>
+			Gender
+		</th>
+		<th style='background-color:#ededed'>
+			Email
+		</th>
+		<th style='background-color:#ededed'>
+			Mobile
+		</th>
+		<?php
+		if($this->type == 'Trainee'){
+		?>
+		<th style='background-color:#ededed'>
+			Points
+		</th>
+		<th style='background-color:#ededed'>
+			Score
+		</th>
+		<?php
+		}
+		?>
+		<th style='background-color:#ededed'>
+			Action
+		</th>
+		
+	</tbody>
+		<?php
+		
+		foreach($this->paginator as $key=>$value){
+		
+			// if trainee set the badge		
+			$assign = $TrainedBy = $totalTrainee = '';
+			if($value->user_type == 'Trainee'){
+				$badge = '<span class="label label-default">Trainee</span>';
+				$MyTrainer = $this->trainer_trainee->getTrainer($value->id);
+				$TrainedBy = '';
+				if($MyTrainer){
+					$TrainedBy = "<br><a href='".HTTP.WWW_ROOT."/admin/users/edit-trainer/id/".$MyTrainer->id."'><span class='label label-warning'>{$MyTrainer->first_name} {$MyTrainer->last_name}</span></a>";
+				}
+				
+				$ModelQuizPlayed = new Model_DbTable_Quiz_Played;
+				$result = $ModelQuizPlayed->fetchAll("user_id='".$value->id."'");
+				
+				$correct_total = $incorrect_total = 0; 
+				// if score found
+				if(count($result)){
+				// for each score
+					foreach($result as $key2=>$value2){
+						// mark correct incorrect
+						if($value2->is_correct)
+							$correct_total ++;
+						else
+							$incorrect_total ++;
+							
+					}
+					$score = "<span class='text text-info'>Correct [{$correct_total}]<span> <span class='text text-error'> Incorrect [{$incorrect_total}]</span><small class='muted'><br>As soon as user start a new Quiz, this score will be deleted.</small>";
+				}
+			}
+			
+			// if trainer set the badge
+			if($value->user_type == 'Trainer'){
+				$badge = '<span class="label label-warning">Trainer</span>';
+				$assign = '<a href="'.HTTP.WWW_ROOT.'/admin/users/assign-trainee/id/'.$value->id.'" class="btn btn-mini btn-info">Assign</a>';
+				$totalTrainee = $this->trainer_trainee->getTraineeCount($value->id);
+				if($totalTrainee)
+					$totalTrainee = '<span class="badge badge-success">'.$totalTrainee.'</span>';
+				else{
+					$totalTrainee = '';
+				}
+			}	
+			
+			
+			echo "
+			<tr>
+				<td width='1%'>
+					{$badge} {$count}
+				</td>
+				<td width='10%'>
+					<img class='thumbnail span12' src='".HTTP.WWW_ROOT."/uploads/".$value->pic."'>
+				</td>
+				<td>
+					{$value->first_name}
+					{$value->last_name}
+					{$TrainedBy}
+					{$totalTrainee}
+				</td>
+				<td>
+					{$value->gender}
+				</td>
+				<td>
+					{$value->email}
+				</td>
+				<td>
+					{$value->mobile}
+				</td>";
+				if($this->type == 'Trainee'){
+				
+				echo "<td>
+					<form action='' method='post' class='form-inline' >
+					<input type='hidden' name='set_points' value='1'>
+					<input type='hidden' name='trainee_id' value='{$value->id}'>
+					<input type='text' class='input-mini' name='points' value='{$value->points}'>
+					<input type='submit' class='btn' value='Go'>
+					</form>
+				</td>";
+				
+				echo "<td>
+					{$score}
+				</td>";
+				}
+
+				echo "<td class='span3'>			
+					<a class='btn btn-mini btn-danger' href='".HTTP.WWW_ROOT."/admin/users/delete-confirm/id/".$value->id."' >X</a> 	";
+				if($value->user_type == 'Trainer'){
+					echo "<a class='btn btn-mini btn-info' href='".HTTP.WWW_ROOT."/admin/users/edit-trainer/id/".$value->id."' >View</a> "; 
+				}
+				if($value->user_type == 'Trainee'){
+					echo "<a class='btn btn-mini btn-info' href='".HTTP.WWW_ROOT."/admin/users/edit-trainee/id/".$value->id."' >View</a> ";
+					echo "<a class='btn btn-mini btn-warning' href='".HTTP.WWW_ROOT."/admin/users/edit-trainee-exercise/id/".$value->id."' >Exercise</a> "; 
+				//echo "<a class='btn btn-mini' href='".HTTP.WWW_ROOT."/admin/users/quiz-score/id/".$value->id."' >Quiz</a> "; 
+				
+				}
+				
+				echo $assign;
+				
+				echo "</td>
+				
+			</tr>";
+		
+		}
+		?>
+		
+</table>
+
+<?php echo $this->paginator; ?>

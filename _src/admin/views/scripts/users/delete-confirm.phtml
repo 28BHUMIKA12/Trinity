@@ -1,0 +1,27 @@
+<div class='span12'>
+
+<h3>You Are About To Delete '<?=$this->user->first_name?>' Permanently.</h3>
+<hr><br>
+	<div class='row-fluid'>
+			<div class='row-fluid'>
+				<div class='span12 '>
+					<div class='alert alert-danger'>
+						<h4>WARNING : This will permanently delete the account and data associated with it. Are you sure?			
+						</h4>
+					</div>
+				</div>		
+			</div>
+			
+			<div class='row-fluid'>
+				<div class='span12'>
+					<hr>
+				</div>
+			</div>
+
+			<a href='<?=HTTP.WWW_ROOT?>/admin/users/delete/id/<?=$this->id?>' class='btn btn-danger'>Yes, Delete Account</a>		
+			<a href='<?=HTTP.WWW_ROOT?>/admin/users/list' class='btn btn'>Cancel</a>		
+	</div>
+
+</div>
+
+

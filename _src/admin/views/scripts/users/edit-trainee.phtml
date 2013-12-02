@@ -1,0 +1,190 @@
+<div class='span12'>
+	<h3>Edit <?=$this->user->first_name?> <?=$this->user->last_name?></h3>
+
+	<?php
+	$MyTrainer = $this->trainer_trainee->getTrainer($this->user->id);
+	if($MyTrainer)
+		echo "<a href='".HTTP.WWW_ROOT."/admin/users/edit-trainer/id/".$MyTrainer->id."'><span class='label label-warning'> Trained by {$MyTrainer->first_name} {$MyTrainer->last_name} </span></a>";
+	
+	?>
+	<hr>		
+	<br>
+	
+	<div class='row-fluid'>
+		
+		<form  method='post'  action='' enctype='multipart/form-data'>		
+			<?php
+			if($this->err){
+				echo "<div class='alert alert-error'>{$this->err}</div>";
+			}
+			?>
+		
+			<div class='row-fluid'>
+				<div class='span12 '>
+					
+					<div class='span3'>
+		
+						<div class="control-group">
+							<div class="controls">						
+								<div class="fileupload fileupload-new" data-provides="fileupload">
+									<div class="fileupload-new thumbnail" style="width: 150px; height: 150px;">
+										<img src='<?=HTTP.WWW_ROOT?>/uploads/<?=$this->user->pic?>'>
+									</div>
+									<div class="fileupload-preview fileupload-exists thumbnail" 
+										style="max-width: 150px; max-height: 150px; line-height: 20px;">
+									</div>
+									<div>
+										<span class="btn btn-file btn-mini">
+											<span class="fileupload-new"><i class='icon icon-user'></i> Select Profile Image</span>
+											<span class="fileupload-exists"><i class='icon icon-edit'></i> Change</span>
+											<input type="file" name='image'/>
+										</span>
+										<a href="#" class="btn btn-mini fileupload-exists" data-dismiss="fileupload">
+											<i class='icon icon-remove'></i> Remove
+										</a>
+									</div>
+								</div>
+				
+							</div>
+						</div>	
+							
+					</div>
+					
+					<div class='span3'>
+					
+						<p><input type="text" name='email' required placeholder="Email … " value="<?=$this->user->email?>"></p>			
+						<p><input type="text" name='first_name' required placeholder="First Name … " value="<?=$this->user->first_name?>"></p>			
+						<p><input type="text" name='last_name' required placeholder="Last Name … " value="<?=$this->user->last_name?>"></p>
+						<p>
+							<?php
+							$gender = array('Male', 'Female');
+							$Male = $Female = '';
+							foreach($gender as $key=>$value){
+				        		if($this->user->gender == $value)
+				        			$$value = 'checked';
+				        			
+			   	        	}   	        	
+			   	        	?> 
+							<label class="radio inline">
+							<input required <?=$Male?> type="radio" name="gender"  value="Male" >
+								Male
+							</label>
+							
+							<label class="radio inline">
+							<input required <?=$Female?> type="radio" name="gender" value="Female">
+								Female
+							</label>
+						</p>
+
+					</div>
+					<div class='span3'>
+					
+						<p><input type="text" name='mobile' required placeholder="Mobile … " value="<?=$this->user->mobile?>"></p>
+						<hr>
+						<p>
+						<span class='muted'>Specify Height:</span><br>
+						<select  name='height_feet' style='width:100px'>
+		            		<?php
+			            	$data = array(3,4,5,6,7,8);
+			            	foreach($data as $key=>$value){
+				        		if($this->user->height_feet == $value)
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value."'>".$value." Feet</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						<select  name='height_inches' style='width:100px'>
+		            		<?php
+			            	$data = array(0,1,2,3,4,5,6,7,8,9,10,11);
+			            	foreach($data as $key=>$value){
+				        		if($this->user->height_inches == $value)
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value."'>".$value." Inches</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						<hr>
+						</p>			
+						<p><input type="text" name='weight_lbs'  placeholder="weight in lbs … " value="<?=$this->user->weight_lbs?>"></p>
+						<p><input type="text" name='age'  placeholder="Age … " value="<?=$this->user->age?>"></p>
+					</div>
+					
+					<div class='span3'>
+						<p>
+						<span class='muted'>Training Hrs per week:</span><br>
+
+						<select  name='training_hrs_per_week' style='width:100px'>
+		            		<?php
+			            	$data = array(1,2,3,4,5,6,7,8,9,10);
+			            	foreach($data as $key=>$value){
+				        		if($this->user->training_hrs_per_week == $value)
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value."'>".$value."</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						</p>	
+								
+						<p>
+						<span class='muted'>Goal:</span><br>
+						<select  name='goal' id='goal'>
+		            		<?php
+			            	$data = $this->goal->fetchAll($this->goal->select()->order(array('name asc')));
+			            	foreach($data as $key=>$value){
+				        		if($this->user->goal == $value['name'])
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value['name']."'>".$value['name']."</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						</p>
+						<p>
+						<span class='muted'>Body Type:</span><br>
+						<select  name='body_type' id='body_type'>
+		            		<?php
+			            	$data = $this->body_type->fetchAll($this->body_type->select()->order(array('name asc')));
+			            	foreach($data as $key=>$value){
+				        		if($this->user->body_type == $value['name'])
+				        			$selected = 'Selected';
+				        		else
+				        			$selected = '';
+				        		
+				        		echo "<option ".$selected." value='".$value['name']."'>".$value['name']."</option>";
+			   	        	}   	        	
+			   	        	?>    
+						</select>
+						</p>
+										
+					</div>
+				</div>		
+			</div>
+			
+			<div class='row-fluid'>
+				<div class='span12'>
+					<hr>
+				</div>
+			</div>
+						
+
+			<button type="submit" class="btn btn-primary"> Submit </button>
+							
+		</form>
+		
+	</div>
+
+
+</div>
+
+

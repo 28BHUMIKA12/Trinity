@@ -1,0 +1,53 @@
+<h4>Flights</h4>
+<br>
+<table class='table table-striped table-bordered'>
+	<tbody >
+		<th style='background-color:#ededed' >
+			Name
+		</th>
+		<th style='background-color:#ededed' >
+			Description
+		</th>
+		<th style='background-color:#ededed' >
+			Vimeo URL
+		</th>
+		<th style='background-color:#ededed'>
+			Frames
+		</th>
+		<th style='background-color:#ededed'>
+		</th>
+	</tbody>
+	<?php
+	if(count($this->FlightsData))	
+		foreach($this->FlightsData as $key=>$value){
+			echo "
+			<tr>
+				<td class='span3'>
+					{$value->name}
+				</td>
+				<td class='span4' >
+					{$value->description}
+				</td>
+				<td class='span3'>
+					{$value->vimeo_url}
+				</td>
+				<td class='span1'>
+					<nobr>
+					<a class='btn btn-mini' href='".HTTP.WWW_ROOT."/admin/quiz/create-step-1/flights_id/".$value->id."' ><i class='icon icon-plus'></i></a>
+					<a class='btn btn-mini' href='".HTTP.WWW_ROOT."/admin/quiz/list/level/".Model_DbTable_Quiz::STARTER."/flights_id/".$value->id."' ><i class='icon icon-list'></i></a> 
+					</nobr>			
+
+				</td>
+				<td class='span1'>
+					<nobr>
+					<a class='btn btn-inverse btn-mini' href='".HTTP.WWW_ROOT."/admin/flight/edit/id/".$value->id."' >Edit</a>
+				";
+				//	<a class='btn btn-danger btn-mini' href='".HTTP.WWW_ROOT."/admin/flight/delete-confirm/id/".$value->id."' >Delete</a> 
+				echo "	</nobr>			
+
+				</td>
+			</tr>";
+		
+		}
+		?>	
+</table>

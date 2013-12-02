@@ -1,0 +1,41 @@
+<div class='span6 white-panel'>
+
+	<h3>
+		Login.
+	</h3>
+	
+	
+	<div class='row-fluid'>
+		
+		<form  method='post' action='<?=HTTP.WWW_ROOT?>/login/auth'>		
+		<?php
+			if($this->err){
+				echo "<div class='alert alert-error'>{$this->err}<button type='button' class='close' data-dismiss='alert'>&times;</button></div>";
+			}
+		?>
+			<p><input type="text" name='username' required placeholder="Username … ">	
+			<input type="password" name='password' required  placeholder="Password … "></p>
+			<button type="submit" class="btn btn-primary"> Login <i class="icon icon-arrow-right icon-white"></i> </button>
+			<hr>
+			<a href='<?=HTTP.WWW_ROOT?>/support/forgot-password' class='small gray'>Forgot Password?</a>
+			<a href='<?=HTTP.WWW_ROOT?>/visitor/register' class='small blue'>Dont have An Account?</a>
+			
+		</form>
+		
+	</div>
+
+</div>
+
+<div class='span6'>
+	<h2>
+		<!-- <span class='red'>Good Health</span> and good sense are two of life's greatest blessings. -->
+	</h2>
+	
+	<div class='row-fluid'>
+	
+		<div class='span12 white-panel'>
+			<a href='<?=HTTP.WWW_ROOT?>/visitor/register' class='btn btn-large btn-danger btn-block'>Signup Now, Its Free! </a>
+			
+		</div>		
+	</div>
+</div>

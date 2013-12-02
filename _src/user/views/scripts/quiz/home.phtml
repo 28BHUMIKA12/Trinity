@@ -1,0 +1,45 @@
+<div class='span12'>
+
+	<h3>Brain Exercises</h3>
+	<hr><br>
+	<?php
+	if(count($this->score)){
+	?>
+		<div class='alert'>
+		<h4>Last Score :</h4>
+		<?php
+		$correct_total = $incorrect_total = 0;
+		// check each question attemted
+		foreach($this->score as $key=>$value){
+			// mark correct incorrect
+			if($value->is_correct)
+				$correct_total ++;
+			else
+				$incorrect_total ++;
+				
+		}
+		echo "<div class='text text-info'><strong>You have {$correct_total} correct and {$incorrect_total} incorrect response(s).</strong> [As soon as you start a new Quiz, this score will be deleted.]</div>";
+		?>
+		</div>
+	<?php
+	}
+	?>
+	<div class='row-fluid'>
+		<div class='span12'>
+			<div class='alert alert-info'> <strong><h4>Quiz contains 7 questions for each day. Your performance is rated as a combination of correct responses and time taken for the total questions solved. </h4></strong></div>
+			<a class='btn btn-success btn-large' href='<?=HTTP.WWW_ROOT?>/user/quiz/start-new-quiz'>Start New Brain Quiz</a>
+
+			<?php
+			if($this->stopped){
+			?>
+				<a class='btn btn-info btn-large' href='<?=HTTP.WWW_ROOT?>/user/quiz/revisit-last-stop'>Start From Where You Left</a>
+			<?php
+			}
+			?>
+
+		</div>		
+	</div>
+	
+</div>
+
+

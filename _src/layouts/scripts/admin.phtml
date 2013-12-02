@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title><?=APP_NAME?></title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link href="<?=HTTP.WWW_ROOT?>/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+	<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/jquery/jquery.js"></script>
+	
+	<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/bootstrap/js/bootstrap.js"></script>
+		
+	<link href="<?php echo HTTP.WWW_ROOT?>/lib/bootstrap/css/admin.css" rel="stylesheet">
+
+	<link href="<?php echo HTTP.WWW_ROOT?>/lib/tagmanager/bootstrap-tagmanager.css" rel="stylesheet">
+	<script type="text/javascript" src="<?php echo HTTP.WWW_ROOT?>/lib/tagmanager/bootstrap-tagmanager.js"></script>
+	
+	<script>
+   		$(function () {
+    	    $("[rel='tooltip']").tooltip();
+    	});
+	</script>
+	
+	<style>
+		body{
+			padding-top: 60px;
+		}
+	</style>
+</head>
+<body>
+
+    <div class="navbar navbar-fixed-top navbar-inverse">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>	
+            <span class="icon-bar"></span>
+          </a>
+ 			<a class="brand">
+ 				Trinity <small class='text text-info'>Beta</small>
+ 			</a>
+           
+           <div class="nav-collapse">
+            <ul class="nav">
+             <li><a href="<?=HTTP.WWW_ROOT?>/admin/items/list">Meal Items</a></li>
+             <li><a href="<?=HTTP.WWW_ROOT?>/admin/users/list">Manage Accounts</a></li>
+             <li><a href="<?=HTTP.WWW_ROOT?>/admin/exercise/list">Customize Exercises</a></li>
+             <li><a href="<?=HTTP.WWW_ROOT?>/admin/quiz/list">Quiz</a></li>
+             
+              <?php
+              	if(Zend_Auth::getInstance()->hasIdentity()){
+              ?>
+              		<li><a href="<?=HTTP.WWW_ROOT?>/login/quit" style='color:#dc443f'> logout </a></li>
+              
+              <?php
+              	}
+              	else{
+              	
+              ?>
+              		<li><a href="<?=HTTP.WWW_ROOT?>/login"> login </a></li>
+               <?php
+               }
+               ?>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+	<div class="container-fluid">		
+	  
+	  <div class='row-fluid'>
+		  <div class='span12'>
+		  <?php
+		  	echo $this->layout()->content;
+		  	
+		  ?>
+		  </div>
+	  </div>
+	  
+	<footer class='center'>
+		<p style='color:#ababab;font-size:11px;letter-spacing:1px;'>Copyright © 2013 Trinity. All rights reserved.</p>
+	</footer>
+
+
+    </div> <!-- /container -->
+
+</body>
+    
+</html>
+

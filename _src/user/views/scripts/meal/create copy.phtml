@@ -1,0 +1,172 @@
+<div class='span12 white-panel'>
+	<h3>
+		Create New Meal Plan.
+	</h3>
+	<hr>
+	<div class='row-fluid'>
+	<form  method='post'  action='' enctype='multipart/form-data'>		
+			
+		<div class='span3 well'>
+			<?php
+			$eat_in = $eat_out = '';
+			if($this->t == 'eat_in')
+				$eat_in = 'checked="checked"';
+			if($this->t == 'eat_out')
+				$eat_out = 'checked="checked"';
+			?>
+			
+			<label class="radio inline">
+			<input required <?=$eat_in?> type="radio" name="eat_type" id='eat_in_flag' value="eat_in" >
+				Eat In
+			</label>
+			
+			<label class="radio inline">
+			<input required <?=$eat_out?> type="radio" name="eat_type"  value="eat_out"  id='eat_out_flag' >
+				Eat Out
+			</label>
+			<hr>
+
+			<span class='muted' >Create Meal for :</span><br>
+			<select  required   name='meal_id'  name='meal_type'>
+				<option></option>
+				<option value='1'>Meal 1 (Breakfast)</option>
+				<option value='2'>Meal 2 (Snack)</option>
+				<option value='3'>Meal 3 (Lunch)</option>
+				<option value='4'>Meal 4 (Snack)</option>
+				<option value='5'>Meal 5 (Dinner)</option>
+				<option value='6'>Meal 6 (Snack)</option>
+			</select>		
+		</div>
+
+		<div class='span4'>
+			<?php
+			if($this->err){
+				echo "<div class='alert alert-error'>{$this->err}</div>";
+			}
+			if($this->msg){
+				echo "<div class='alert alert-success'>{$this->msg}</div>";
+			}
+			?>
+			<div class='row-fluid'>
+				<div class='span12 '>
+					<div class='span1'>
+					</div>
+					<div class='span10'>						
+						<p>
+							<span class='muted'>Select Item :</span><br>
+							<select  onChange="getSubItem(this.value)"  name='item' required >
+							<option></option>
+								<?php
+								if($this->data)
+									foreach($this->data as $key=>$value){
+										echo "<option name='name' value='".$value->id."'>".$value->name."</option>";
+									
+									}
+								?>
+								
+							</select>
+						</p>			
+						<p>
+							<span class='muted'>Select Sub-Item :</span><br>
+							<select name='item_id' id='item_id' >
+								<option></option>
+							</select>
+						</p>
+						
+						<!-- 
+						<p>
+							<span class='muted'>Measure/Quantity :</span><br>
+							<input type="text" name='item_stats_id' value='1'>
+							
+						</p>
+						-->				
+					</div>
+					
+					<div class='span1'>
+					</div>				
+				</div>		
+			</div>
+			
+			<div class='row-fluid'>
+				<div class='span12'>
+					<hr>
+				</div>
+			</div>
+			
+			<button type="submit" class="btn btn-primary"> Submit </button>
+							
+		</div>
+		
+		<div class='span5'>
+			<span class='muted'>Below will update automatically based on your selection : </span><br>
+			<table class='table table-stripped table-condensed table-hover table-bordered'>
+				<tr>
+					<td width="50%" class=''>
+						Gram
+					</td>
+					<td>
+						3.2
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Calories
+					</td>
+					<td>
+					23.4
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Protein
+					</td>
+					<td>
+					12.4
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Fat
+					</td>
+					<td>
+					76.6
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Carbs
+					</td>
+					<td>
+					74.3
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Fiber
+					</td>
+					<td>
+					47.4
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+	</form>		
+	</div>
+	
+</div>
+
+<script>
+	$(function(){
+		$('#eat_in_flag').on('click',function(){
+			window.location = '<?=HTTP.WWW_ROOT?>/user/meal/create/t/eat_in'
+		});
+		$('#eat_out_flag').on('click',function(){
+			window.location = '<?=HTTP.WWW_ROOT?>/user/meal/create/t/eat_out'
+		});
+		
+	});
+
+</script>
+
+

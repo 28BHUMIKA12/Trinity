@@ -1,0 +1,27 @@
+<div class='span12'>
+
+<h3>You Are About To Delete '<?=$this->user_meal->name?>' Permanently.</h3>
+<hr><br>
+	<div class='row-fluid'>
+			<div class='row-fluid'>
+				<div class='span12 '>
+					<div class='alert alert-danger'>
+						<h4>WARNING : This will permanently delete all Meal Items associate with it. Are you sure?			
+						</h4>
+					</div>
+				</div>		
+			</div>
+			
+			<div class='row-fluid'>
+				<div class='span12'>
+					<hr>
+				</div>
+			</div>
+
+			<a href='<?=HTTP.WWW_ROOT?>/user/meal/delete/code/<?=$this->user_meal->code?>' class='btn btn-danger'>Yes, Delete Meal Plan</a>		
+			<a href='<?=HTTP.WWW_ROOT?>/user/meal/plan' class='btn btn'>Cancel</a>		
+	</div>
+
+</div>
+
+
