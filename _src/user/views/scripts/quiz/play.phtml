@@ -1,89 +1,123 @@
 <div class='span12 white-panel'>
 	<div class='pull-right' id='time_elapsed'>
-	<?php
-		//echo "Time Elapsed (min:sec) = ".date('i:s',$this->total_time_played);
-		//echo $this->total_time_played;
-	?>
 	</div>
 	
 	<h2><?=ucfirst($this->q->title)?></h2>
 	<h3><?=ucfirst($this->q->description)?></h3>
-	<hr><br>
-	
+	<div class='row-fluid'>
+	<div class='span12'>
+		<?php
+		if($this->q->image){
+			echo "<div class='span3'><img src='".HTTP.WWW_ROOT."/uploads/".$this->q->image."'></div>";
+		}
+		if($this->q->audio){
+			echo "<div class='span3'><a href='#' id='audio_play' class='btn btn-large'><i class='icon icon-play'></i> Click to play</a></div>";
+		}
+		if($this->q->video){
+		?>
+			<div class='span3'>
+			<iframe 
+				src="<?=$this->q->video?>" 
+				width="300"
+				height="200"
+				frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen>
+			</iframe>
+			</div>
+		<?php
+		}
+		?>
+		<div class='row-fluid'>
+			<div class='span12'>
+				<hr>
+			</div>
+		</div>
+	</div>
+	</div>
 	<div class='row-fluid'>
 		<div class='span12'>
-			<form action="<?=HTTP.WWW_ROOT?>/user/quiz/submit" method="post">
-			<input type='hidden' name='answer_type' value='<?=$this->type?>'>
-			<input type='hidden' name='question_id' value='<?=$this->q->id?>'>
+			<form  id='play_form' action="<?=HTTP.WWW_ROOT?>/user/quiz/submit" method="post">
+			<input type='hidden' name='answer_type' id='answer_type' value='<?=trim($this->type)?>'>
+			<input type='hidden' name='question_id' id='question_id' value='<?=trim($this->q->id)?>'>
+			<input type='hidden' name='code' id='code' value='<?=trim($this->correct->id)?>'>
+			<input type='hidden' name='code_data' id='code_data' value='<?=trim($this->correct->data)?>'>
 			<?php
 				switch($this->type){
 					
 					case Model_DbTable_Answer::TEXT:
-						echo "<div class='alert alert-success'>Enter correct answer and hit submit!</div>";
-						echo "<input type='text' class='span4' name='answer'>";
-						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit' class='btn btn-info'></div></div>";
+						echo "<div id='quiz_msg' class='alert alert-success'>Enter correct answer and hit submit!</div>";
+						echo "<input type='text' class='span4' id='answer' name='answer'>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit'  id='btn_submit' class='btn btn-info'></div></div>";
 						break;
 						
 					case Model_DbTable_Answer::IMAGESERIES:
-						echo "<div class='alert alert-success'>Select the correct image and submit</div>";
+						echo "<div id='quiz_msg' class='alert alert-success'>Select the correct image and submit</div>";
+						$i = 1;
+						echo "<div id='all_images'>";
 						foreach ($this->a as $key=>$value){
-							echo "<img class='span2 thumbnail' src='".HTTP.WWW_ROOT."/uploads/".$value->data."'>";
+							echo "<img class='span2 thumbnail' id='image ".$i."' src='".HTTP.WWW_ROOT."/uploads/".$value->data."'>";
+							$i++;
 						}
-						$i=1;
+						echo "</div>";
+						$i = 1;
 						echo "<div class='row-fluid'><div class='span12'><hr></div></div>";
-						echo "<select name='answer'>";
+						echo "<select name='answer' id='answer'>";
 						foreach ($this->a as $key=>$value){
 							echo "<option value='".$value->id."'>{$i}</option>";
 							$i++;
 						}
 						echo "</select>";
-						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit' class='btn btn-info'></div></div>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit'  id='btn_submit' class='btn btn-info'></div></div>";
 						
 						break;
+						
 					case Model_DbTable_Answer::VIDEOSERIES:
-						echo "<div class='alert alert-success'>Select the correct image and submit</div>";
+						echo "<div id='quiz_msg' class='alert alert-success'>Select the correct image and submit</div>";
+						echo "<div id='all_videos'>";
 						foreach ($this->a as $key=>$value){
-							echo "<div class='span2 thumbnail'><iframe 
+							echo "<div class='span3'><iframe 
 								src=".$value->data." 
 								width='200' 
 								height='150' 
 								frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen>
 							</iframe></div>";
 						}
+						echo "</div>";
 						$i=1;
-						echo "<div class='row-fluid'><div class='span12'><hr></div></div>";
-						echo "<select name='answer'>";
+						echo "<div class='row-fluid'><div class='span12'><br></div></div>";
+						echo "<select name='answer' id='answer'>";
 						foreach ($this->a as $key=>$value){
 							echo "<option value='".$value->id."'>{$i}</option>";
 							$i++;
 						}
 						echo "</select>";
-						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit' class='btn btn-info'></div></div>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit'   id='btn_submit' value='Submit' class='btn btn-info'></div></div>";
 						
 						break;
 					
 						
 					case Model_DbTable_Answer::MULTICHECK:
-						echo "<div class='alert alert-success'>Select the correct answer and submit</div>";
+						echo "<div id='quiz_msg' class='alert alert-success'>Select the correct answer and submit</div>";
+						echo "<div id='all_checkboxes'>";
 						foreach ($this->a as $key=>$value){
-							echo "<label class='radio'><input name='answer' value='".$value->id."' type='radio'>$value->data</label>";
+							echo "<label class='radio'><input id='answer[]' name='answer[]' value='".$value->id."' type='radio'>$value->data</label>";
 						}
-						echo "<hr><input type='submit' value='Submit' class='btn btn-info'>";
+						echo "</div>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit'   id='btn_submit' value='Submit' class='btn btn-info'></div></div>";
 						break;
 						
 					case Model_DbTable_Answer::TRUEFALSE:
-						echo "<div class='alert alert-success'>Specify if Question is TRUE or FALSE.</div>";
-						echo "<select name='answer'>";
+						echo "<div id='quiz_msg' class='alert alert-success'>Specify if Question is TRUE or FALSE.</div>";
+						echo "<select name='answer' id='answer'>";
 						echo "<option value='1'>True</option>";
 						echo "<option value='0'>False</option>";
 						echo "</select>";
-						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' value='Submit' class='btn btn-info'></div></div>";
+						echo "<div class='row-fluid'><div class='span12'><br><br><input type='submit' id='btn_submit' value='Submit' class='btn btn-info'></div></div>";
 						
 						break;
 					
 				}
 			?>
-			
+				<input type="submit" id='next_q' class="btn btn-primary" value="Next Question >>">
 			</form>
 		</div>		
 	</div>
@@ -93,7 +127,7 @@
 
 <script>
 
-setInterval(function(){ 
+var timer = setInterval(function(){ 
 	$.ajax({
 		type:"post",
 		url:"<?=HTTP.WWW_ROOT?>/user/quiz/get-elapsed-time-ajax/",
@@ -102,7 +136,124 @@ setInterval(function(){
 			$('#time_elapsed').html(data);
 		}
 	});
-}, 1000);//time in milliseconds 
+}, 1500);//time in milliseconds 
+
+$(document).ready(function() {
+	
+	// hide the next button
+	$("#next_q").hide();
+	
+	// when clicked submit the form
+	$("#next_q").click(function( event ) {
+		$("#play_form").submit();	
+	});
+	
+	// when clicked show the correct/incorrect msg
+	$("#play_form").submit(function( event ) {
+		
+		clearInterval(timer);
+		
+		event.preventDefault();
+		$(this).unbind(event);
+		var code_data = $("#code_data").val();
+		var code = $("#code").val();
+		var answer = $("#answer").val();
+		
+		//alert(code+'-'+answer);
+		$("#answer").prop('readOnly', true);
+		
+		// only for true and false
+		if(code_data == 1){
+			truefalse_code_data = 'True';
+		}
+		else{
+			truefalse_code_data = 'False';
+		}
+		<?php
+	
+		switch($this->type){
+			case Model_DbTable_Answer::TEXT:
+				?>
+					if(code_data == answer){
+						$("#quiz_msg").html("<h4><strong>Answer is correct.</strong></h4>");
+					}
+					else{
+						$("#quiz_msg").html("<h4><strong style='color:red'>Answer is incorrect. Correct answer is "+code_data+"</strong></h4>");	
+					}
+					
+				<?php				
+				break;
+			case Model_DbTable_Answer::IMAGESERIES:
+				?>
+					$("#all_images").hide();
+					if(code == answer){
+						$("#quiz_msg").html("<h4><strong>Answer is correct.</strong></h4>");
+					}
+					else{
+						$("#quiz_msg").html("<h4><strong style='color:red'>Answer is incorrect. Correct answer is below</strong></h4><div><img class='span2' src='<?=HTTP.WWW_ROOT?>/uploads/"+code_data+"'></div>");	
+					}
+				<?php				
+				break;
+			case Model_DbTable_Answer::VIDEOSERIES:
+				?>
+					$("#all_videos").hide();
+					if(code == answer){
+						$("#quiz_msg").html("<h4><strong>Answer is correct.</strong></h4>");
+					}
+					else{
+						$("#quiz_msg").html("<h4><strong style='color:red'>Answer is incorrect. Correct answer is "+code_data+"</strong></h4>");	
+					}
+				<?php				
+				break;
+			case Model_DbTable_Answer::MULTICHECK:
+				?>
+					var radio = $('input:radio[id=answer[]]:checked').val();
+					
+					$("#all_checkboxes").hide();
+					if(code == radio){
+						$("#quiz_msg").html("<h4><strong>Answer is correct.</strong></h4>");
+					}
+					else{
+						$("#quiz_msg").html("<h4><strong style='color:red'>Answer is incorrect. Correct answer is "+code_data+"</strong></h4>");	
+					}
+				<?php				
+				break;
+			case Model_DbTable_Answer::TRUEFALSE:
+				?>
+					if(code_data == answer){
+						$("#quiz_msg").html("<h4><strong>Answer is correct.</strong></h4>");
+					}
+					else{
+						$("#quiz_msg").html("<h4><strong style='color:red'>Answer is incorrect. Correct answer is "+truefalse_code_data+"</strong></h4>");	
+					}
+				<?php				
+				break;
+			default:		
+		}
+		?>
+		
+		$("#next_q").show();
+		$("#btn_submit").hide();
+		
+	});
+	
+	
+	var audio = document.createElement('audio');
+	
+	audio.setAttribute('src', '<?=HTTP.WWW_ROOT?>/uploads/<?=$this->question->audio?>');
+	
+	$.get();
+	audio.addEventListener("load", function() {
+		audio.play();
+	}, true);
+	
+	//put below in success failure accordingly.
+	$('#audio_play').click(function() {
+		//alert('dd');
+		audio.play();
+	});
+	
+});
 
 
 </script>

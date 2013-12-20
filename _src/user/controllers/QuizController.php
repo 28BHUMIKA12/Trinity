@@ -83,6 +83,7 @@ class User_QuizController extends Core_Trainee{
 		$insert['user_id'] 		= $this->auth->id;
 		$insert['quiz_start'] 	= $time;
 		$insert['quiz_end'] 	= $time;
+		$insert['total_time_played'] 	= '';
 		$insert['is_stopped'] 	= '0';
 		$this->quiz->doCreate($insert);
 		
@@ -120,23 +121,19 @@ class User_QuizController extends Core_Trainee{
 		
 		// check that state
 		$check = $this->quiz->fetchRow("user_id='".$this->auth->id."'");
-		
+		$this->view->q = '';
 		// must exist a new or stopped quiz at this point
 		if($check){
 			// private
 			
-			//$updateQuiz['quiz_end'] = time();
-			//$this->quiz->doUpdate($updateQuiz,"user_id='".$this->auth->id."'");
-			
-			//$this->view->start_time = $check->quiz_start;
-			//$this->view->total_time_played = $check->quiz_end - $check->quiz_start;
-			
 			$this->view->q = $this->_loadQuestion($check);
-			
 			// check if q exists, else quiz over
 			if($this->view->q){
-				$this->view->type = $this->view->q->data_type;
-				$this->view->a = $this->answer->fetchAll("question_id='".$this->view->q->id."'");
+				$this->view->type 	= $this->view->q->data_type;
+				$this->view->a 		= $this->answer->fetchAll("question_id='".$this->view->q->id."'");
+				$this->view->correct = $this->answer->fetchRow("is_correct='1' and question_id='".$this->view->q->id."'");
+				$this->render();
+					
 			}
 			else{
 				// quiz over
@@ -164,8 +161,6 @@ class User_QuizController extends Core_Trainee{
 		if($check->is_stopped == 1){
 			
 			// set udpates
-			$total = $check->quiz_start - $check->stopped_time;
-			$update['total_time_played'] = $total;
 			$update['is_stopped'] = 0;
 			$update['stopped_time'] = '';
 			$this->quiz->doUpdate($update,"id='".$check->id."'");
@@ -203,6 +198,8 @@ class User_QuizController extends Core_Trainee{
 		}
 		
 		
+		$insertPlayed['is_correct'] = 0;
+		
 		// if answer submitted
 		if($this->getRequest()->isPost()){
 			
@@ -230,7 +227,7 @@ class User_QuizController extends Core_Trainee{
 					$check = $this->answer->fetchRow("question_id='".$p['question_id']."' and is_correct='1'");
 					// you must have the answer record
 					if($check){
-						if(strtolower($check->id) == strtolower($p['answer'])){
+						if(strtolower($check->id) == strtolower($p['answer'][0])){
 							$AnswerSubmitFlag = 1;
 						}
 					}
@@ -244,7 +241,10 @@ class User_QuizController extends Core_Trainee{
 				case Model_DbTable_Answer::IMAGESERIES:
 					// get the answer for this
 					$check = $this->answer->fetchRow("question_id='".$p['question_id']."' and is_correct='1'");
+					
 					// you must have the answer record
+					// only for checkbox do this
+					$p['answer'] = $p['answer'][0];
 					
 					if($check){
 						if(strtolower($check->id) == strtolower($p['answer'])){
@@ -300,6 +300,10 @@ class User_QuizController extends Core_Trainee{
 			$insertPlayed['user_id'] 		= $this->auth->id;
 			$insertPlayed['answer_given'] 	= $p['answer'];
 			$insertPlayed['dated'] 			= time();
+			
+			//print_r($p);
+			//die;
+			
 			$this->quiz_played->doCreate($insertPlayed);
 			
 			// check how many questin has bee played
@@ -315,9 +319,9 @@ class User_QuizController extends Core_Trainee{
 			// update user 
 			$this->user->doUpdate($update,"id='".$user->id."'");
 			
-			// redirect to play, it should load next q automatically
 			$this->_redirect('user/quiz/play');	
-		}	
+		}
+		
 	}
 	
 	/**
@@ -340,10 +344,14 @@ class User_QuizController extends Core_Trainee{
 	
 		$check = $this->quiz->fetchRow("user_id='".$this->auth->id."'");
 		
-		$total_time_played = $check->quiz_end - $check->quiz_start;
+		$total_time_played = $check->total_time_played;
+		if(!$total_time_played)
+			$total_time_played = 0;
+		
 		echo "<center class='btn disabled btn-mini'>Time Elapsed<h3>".date('i:s',$total_time_played)."</h3></center>";
 		
 		$updateQuiz['quiz_end'] = time();
+		$updateQuiz['total_time_played'] = $total_time_played + 1;
 		$this->quiz->doUpdate($updateQuiz,"user_id='".$this->auth->id."'");
 		
 		die;
