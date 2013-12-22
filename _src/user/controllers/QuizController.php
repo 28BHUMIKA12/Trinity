@@ -332,6 +332,9 @@ class User_QuizController extends Core_Trainee{
 	 */
 	public function quizOverAction(){
 	
+		$this->view->result = $this->quiz_played->fetchAll("user_id='".$this->auth->id."'");
+		$this->view->quiz = $this->quiz->fetchRow("user_id='".$this->auth->id."'");
+		
 	}
 	
 	/**

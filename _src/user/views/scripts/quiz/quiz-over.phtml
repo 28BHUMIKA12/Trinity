@@ -3,6 +3,40 @@
 	<h3>Current Quiz Session Over</h3>
 	<hr><br>
 	
+	<div class='alert alert-danger'>
+		<h4>
+		Your scored 
+		<?php
+		$correct_total = $incorrect_total = 0; 
+		
+		// if score found
+		if(count($this->result)){
+			
+			// for each score
+			foreach($this->result as $key=>$value){
+				// mark correct incorrect
+				if($value->is_correct)
+					$correct_total ++;
+				else
+					$incorrect_total ++;
+				
+			}
+		}
+		
+		$total = $correct_total + $incorrect_total;
+		$percentage = ($correct_total/$total)*100;
+		echo $percentage.'% correct.';
+		?>
+		
+		Average time taken for each question is 
+		<?php
+			echo ($this->quiz->total_time_played/$total);
+		?>
+		sec.
+		</h4>
+		
+	</div>
+	
 	<div class='row-fluid'>
 		<div class='span12'>
 			<div class='alert alert-info'> <strong><h4>Current session of Quiz is finished, but you can start the quiz again.</h4></strong></div>

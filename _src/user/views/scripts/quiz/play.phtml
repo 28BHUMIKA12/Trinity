@@ -155,9 +155,10 @@ $(document).ready(function() {
 		
 		event.preventDefault();
 		$(this).unbind(event);
+		
 		var code_data = $("#code_data").val();
-		var code = $("#code").val();
-		var answer = $("#answer").val();
+		var code 	= $("#code").val();
+		var answer 	= $("#answer").val();
 		
 		//alert(code+'-'+answer);
 		$("#answer").prop('readOnly', true);

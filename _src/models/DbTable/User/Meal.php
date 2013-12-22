@@ -311,29 +311,7 @@ class Model_DbTable_User_Meal extends Core_Db{
 				break;
 			}
 			
-			/*
-			// if cal close to 100% exit
-			if($meal_id != 7)
-				//$per = ($CurrentStat/$targets['cals'])*100;
-				//if($per > 100){
-				if($CurrentStat > $targets['cals']){
-					$CurrentStat = 0.0;
-					break;
-				}
-			else{
-				
-				$per = ($CurrentStat/$targetsTotal['cals'])*100;
-				
-				if($per > 15){
-					$CurrentStat = 0.0;
-					break;
-				}	
-			}
-			
-			*/
-
 		}	
-		
 		
 	}
 	

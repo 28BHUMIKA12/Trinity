@@ -121,12 +121,14 @@
 				if($this->type == 'Trainee'){
 				
 				echo "<td>
+					<br>
 					<form action='' method='post' class='form-inline' >
 					<input type='hidden' name='set_points' value='1'>
 					<input type='hidden' name='trainee_id' value='{$value->id}'>
-					<input type='text' class='input-mini' name='points' value='{$value->points}'>
+					<input type='text' class='input-mini' style='max-width:30px' name='points' value='{$value->points}'>
 					<input type='submit' class='btn' value='Go'>
 					</form>
+					</br>
 				</td>";
 				
 				echo "<td>
