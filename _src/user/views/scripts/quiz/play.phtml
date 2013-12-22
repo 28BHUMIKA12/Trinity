@@ -186,7 +186,7 @@ $(document).ready(function() {
 				break;
 			case Model_DbTable_Answer::IMAGESERIES:
 				?>
-					$("#all_images").hide();
+					//$("#all_images").hide();
 					if(code == answer){
 						$("#quiz_msg").html("<h4><strong>Answer is correct.</strong></h4>");
 					}
@@ -197,7 +197,7 @@ $(document).ready(function() {
 				break;
 			case Model_DbTable_Answer::VIDEOSERIES:
 				?>
-					$("#all_videos").hide();
+					//$("#all_videos").hide();
 					if(code == answer){
 						$("#quiz_msg").html("<h4><strong>Answer is correct.</strong></h4>");
 					}
@@ -210,7 +210,7 @@ $(document).ready(function() {
 				?>
 					var radio = $('input:radio[id=answer[]]:checked').val();
 					
-					$("#all_checkboxes").hide();
+					//$("#all_checkboxes").hide();
 					if(code == radio){
 						$("#quiz_msg").html("<h4><strong>Answer is correct.</strong></h4>");
 					}

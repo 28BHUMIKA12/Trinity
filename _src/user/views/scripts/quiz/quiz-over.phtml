@@ -24,13 +24,13 @@
 		}
 		
 		$total = $correct_total + $incorrect_total;
-		$percentage = ($correct_total/$total)*100;
+		$percentage = round(($correct_total/$total)*100);
 		echo $percentage.'% correct.';
 		?>
 		
 		Average time taken for each question is 
 		<?php
-			echo ($this->quiz->total_time_played/$total);
+			echo round($this->quiz->total_time_played/$total);
 		?>
 		sec.
 		</h4>

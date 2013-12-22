@@ -196,7 +196,6 @@ class Model_DbTable_User_Meal extends Core_Db{
 			
 			$_125Factor = $_125Factor * .125;
 			
-			
 			$select = $item_stats->select();
 			$select->where("weight='".$_125Factor."'");
 			$select->where("item_id='".$key."'");
