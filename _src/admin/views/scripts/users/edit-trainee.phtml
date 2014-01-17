@@ -27,11 +27,11 @@
 						<div class="control-group">
 							<div class="controls">						
 								<div class="fileupload fileupload-new" data-provides="fileupload">
-									<div class="fileupload-new thumbnail" style="width: 150px; height: 150px;">
+									<div class="fileupload-new thumbnail" style="width: 120px; height: 120px;">
 										<img src='<?=HTTP.WWW_ROOT?>/uploads/<?=$this->user->pic?>'>
 									</div>
 									<div class="fileupload-preview fileupload-exists thumbnail" 
-										style="max-width: 150px; max-height: 150px; line-height: 20px;">
+										style="max-width: 120px; max-height: 120px; line-height: 20px;">
 									</div>
 									<div>
 										<span class="btn btn-file btn-mini">
@@ -52,9 +52,10 @@
 					
 					<div class='span3'>
 					
-						<p><input type="text" name='email' required placeholder="Email … " value="<?=$this->user->email?>"></p>			
-						<p><input type="text" name='first_name' required placeholder="First Name … " value="<?=$this->user->first_name?>"></p>			
-						<p><input type="text" name='last_name' required placeholder="Last Name … " value="<?=$this->user->last_name?>"></p>
+						<p><input type="text" class='span12' name='email' required placeholder="Email … " value="<?=$this->user->email?>"></p>			
+						<p><input type="text" class='span12' name='first_name' required placeholder="First Name … " value="<?=$this->user->first_name?>"></p>			
+						<p><input type="text" class='span12' name='last_name' required placeholder="Last Name … " value="<?=$this->user->last_name?>"></p>
+						<p><input type="text" class='span12' name='mobile' required placeholder="Mobile … " value="<?=$this->user->mobile?>"></p>
 						<p>
 							<?php
 							$gender = array('Male', 'Female');
@@ -66,12 +67,12 @@
 			   	        	}   	        	
 			   	        	?> 
 							<label class="radio inline">
-							<input required <?=$Male?> type="radio" name="gender"  value="Male" >
+							<input required <?=$Male?> type="radio"  name="gender"  value="Male" >
 								Male
 							</label>
 							
 							<label class="radio inline">
-							<input required <?=$Female?> type="radio" name="gender" value="Female">
+							<input required <?=$Female?> type="radio"  name="gender" value="Female">
 								Female
 							</label>
 						</p>
@@ -79,11 +80,9 @@
 					</div>
 					<div class='span3'>
 					
-						<p><input type="text" name='mobile' required placeholder="Mobile … " value="<?=$this->user->mobile?>"></p>
-						<hr>
 						<p>
 						<span class='muted'>Specify Height:</span><br>
-						<select  name='height_feet' style='width:100px'>
+						<select  name='height_feet' class='span12'>
 		            		<?php
 			            	$data = array(3,4,5,6,7,8);
 			            	foreach($data as $key=>$value){
@@ -96,7 +95,7 @@
 			   	        	}   	        	
 			   	        	?>    
 						</select>
-						<select  name='height_inches' style='width:100px'>
+						<select  name='height_inches' class='span12'>
 		            		<?php
 			            	$data = array(0,1,2,3,4,5,6,7,8,9,10,11);
 			            	foreach($data as $key=>$value){
@@ -111,15 +110,15 @@
 						</select>
 						<hr>
 						</p>			
-						<p><input type="text" name='weight_lbs'  placeholder="weight in lbs … " value="<?=$this->user->weight_lbs?>"></p>
-						<p><input type="text" name='age'  placeholder="Age … " value="<?=$this->user->age?>"></p>
+						<p><input type="text" name='weight_lbs' class='span12'  placeholder="weight in lbs … " value="<?=$this->user->weight_lbs?>"></p>
+						<p><input type="text" name='age' class='span12' placeholder="Age … " value="<?=$this->user->age?>"></p>
 					</div>
 					
 					<div class='span3'>
 						<p>
 						<span class='muted'>Training Hrs per week:</span><br>
 
-						<select  name='training_hrs_per_week' style='width:100px'>
+						<select  name='training_hrs_per_week' class='span12' >
 		            		<?php
 			            	$data = array(1,2,3,4,5,6,7,8,9,10);
 			            	foreach($data as $key=>$value){
@@ -136,7 +135,7 @@
 								
 						<p>
 						<span class='muted'>Goal:</span><br>
-						<select  name='goal' id='goal'>
+						<select  name='goal' id='goal' class='span12'>
 		            		<?php
 			            	$data = $this->goal->fetchAll($this->goal->select()->order(array('name asc')));
 			            	foreach($data as $key=>$value){
@@ -152,7 +151,7 @@
 						</p>
 						<p>
 						<span class='muted'>Body Type:</span><br>
-						<select  name='body_type' id='body_type'>
+						<select  name='body_type' id='body_type' class='span12'>
 		            		<?php
 			            	$data = $this->body_type->fetchAll($this->body_type->select()->order(array('name asc')));
 			            	foreach($data as $key=>$value){

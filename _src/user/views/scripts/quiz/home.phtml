@@ -18,8 +18,20 @@
 				$incorrect_total ++;
 				
 		}
-		echo "<div class='text text-info'><strong>You have {$correct_total} correct and {$incorrect_total} incorrect response(s).</strong> [As soon as you start a new Quiz, this score will be deleted.]</div>";
+		echo "<div class='text text-info'><strong>You have {$correct_total} correct and {$incorrect_total} incorrect response(s).</strong> [As soon as you start a new Quiz, this score will be deleted.]<br><h4>";
+		
+		$total = $correct_total + $incorrect_total;
+		$percentage = round(($correct_total/$total)*100);
+		echo $percentage.'% correct.';
 		?>
+		
+		Average time taken for correct answer was 
+		<?php
+			echo round($this->quiz->total_time_played/$total);
+		?>
+		sec.
+		</h4>
+		</div>
 		</div>
 	<?php
 	}

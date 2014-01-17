@@ -45,7 +45,7 @@ class VisitorController extends Core_Controller{
 			$checkEmail = $this->user->fetchrow("email='".$p['email']."'");
 			
 			if($checkEmail){
-				$this->view->err .= "Email must be unique.<br>";
+				$this->view->err .= "Account with that email already exists.<br>";
 				$flag = true;
 			}
 			if(!$p['password']){

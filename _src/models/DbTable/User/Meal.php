@@ -28,7 +28,7 @@ class Model_DbTable_User_Meal extends Core_Db{
 	protected $_primary = 'id';
 	
 	/*
-	* how many items to search to make a meal, Max food items to 200
+	* how many items goes in what meal, Max items
 	*/
 	CONST NUM_ITEM_M_1 = 200;
 	CONST NUM_ITEM_M_2 = 200;
@@ -39,14 +39,12 @@ class Model_DbTable_User_Meal extends Core_Db{
 	CONST NUM_ITEM_M_7 = 200;
 	
 	/*
-		max and min calories that are allowed for each food item
+		max and min cal for each item
 	*/
+	
 	CONST MIN_CAL = 0.15;
 	CONST MAX_CAL = 0.30;
 	
-	/*
-		after meal : max and min calories that are allowed for each food item
-	*/
 	CONST AFTER_MEAL_MIN_CAL = 0.10;
 	CONST AFTER_MEAL_MAX_CAL = 0.45;
 	
@@ -56,7 +54,6 @@ class Model_DbTable_User_Meal extends Core_Db{
 	 * 
 	 * @var mixed
 	 * @access private
-	 * @desc predifined meal items, for meal 1,2,3,4,5,6 and 7 , used to create meal with calories in it
 	 */
 	private $mealItemsMaster= array(
 		
@@ -104,15 +101,7 @@ class Model_DbTable_User_Meal extends Core_Db{
 		$insert['name']			= 'Default';
 		$insert['user_id'] 		= $id;
 		$insert['eat_type'] 	= Model_DbTable_Item::GROCERY;
-		
-		// NOTE : meal not created yet!
 		$eat_grocery = $this->doCreate($insert);
-		
-		// each of this line will call function() setDefaultMeal() below 
-		// see line 164
-		// each of below line have 5 parameters
-		// 2nd paramater is the meal number 1,2,3,4,5,6 or 7
-		// not go to line 164
 		$this->setDefaultMeal($id,1,Model_DbTable_Item::GROCERY,$eat_grocery,self::NUM_ITEM_M_1);		
 		$this->setDefaultMeal($id,2,Model_DbTable_Item::GROCERY,$eat_grocery,self::NUM_ITEM_M_2);		
 		$this->setDefaultMeal($id,3,Model_DbTable_Item::GROCERY,$eat_grocery,self::NUM_ITEM_M_3);		
@@ -150,74 +139,68 @@ class Model_DbTable_User_Meal extends Core_Db{
 			$this->setDefaultMeal($id,6,Model_DbTable_Item::GROCERY,$eat_grocery,self::NUM_ITEM_M_6);		
 			$this->setDefaultMeal($id,7,Model_DbTable_Item::GROCERY,$eat_grocery,self::NUM_ITEM_M_7);		
 			
-		}	
+		}
+		
  	}
 	
 	
 	/**
-	 * setDefaultMeal function.
+	 * setDefaultMeal2 function.
 	 * 
 	 * @access public
 	 * @return void
 	 */
 	public function setDefaultMeal($id,$meal_id,$eat_type,$user_meal_id,$num_items){
 	
-		// ignore below 7 lines
 		$item = new Model_DbTable_Item;
 		$item_stats = new Model_DbTable_Item_Stats;
 		$UserMealItems = new Model_DbTable_User_Meal_Items;
 		$UserRequired = new Model_DbTable_User_Required;
+
+		// these are fixed
 		$insert['meal_id']			= $meal_id;
 		$insert['user_meal_id'] 	= $user_meal_id;
 		$insert['eat_type'] 		= $eat_type;
 		
-		// get items to add, they are fixed, 
-		// below will get the predefined items check line 63 above
-		// $meal_id are 1,2,3,4,5,6,7
+		// get items to add, they are fixed
 		$itemsToCheck = $this->mealItemsMaster[$meal_id];
 		
 		// get target for this meal
-		// this will calculate total target for a day needed.
-		// not need to worry for it, this is based on BMR
 		$TotalDayTargets = $UserRequired->getTargets($id);
 		
-		// get target for specific meal i.e. 1,2,3,4,5,6,7
-		// for this user
+		// get target for this meal
 		$MealTargets = $UserRequired->getMealRequirement($id,$meal_id);
 		
-		// ignore this line
 		$MealTargetCals = $MealTargets['cals'];
 		
 		// for meal 7 its different
-		// below is onl for meal 7, ignre this
 		if($meal_id == 7){
 			$MealTargetCals = $TotalDayTargets['cals']*.18;		
 			//die;
 		}
 		
-		
-		// ABOVE we have only calculated how much is needed for each day and for each items 1,2,3,4,5,6,7
-		// now below we are starting for get the food item
-		// we will loop for each items in above line #63
+		// foreach item get stats
 		foreach($itemsToCheck as $key=>$value){
 			
-			// get stats for weight 1
+			// get for 1 qty
 			$ItemData = $item_stats->fetchRow("item_id='".$key."' and weight='1'");
 			
-			// get qty required for this item
-			// e.g.  ((.25 x 2)/4)
-			$RequiredQty = (floor($value * $MealTargetCals))/ $ItemData->calories;
+			// cal requried by this item
+			$CalRequiredByItem = floor($value * $MealTargetCals);
 			
-			// get 125 factor
-			$_125Factor = ((ceil(($RequiredQty / .125))) * .125);
+			// get qty required
+			$RequiredQty = $CalRequiredByItem / $ItemData->calories;
 			
-			// below 4 lines get the weight for .125 wight factor
+			// get .125 mod
+			$_125Factor = ceil(($RequiredQty / .125));
+			
+			$_125Factor = $_125Factor * .125;
+			
 			$select = $item_stats->select();
 			$select->where("weight='".$_125Factor."'");
 			$select->where("item_id='".$key."'");
 			$items_stat = $item_stats->fetchRow($select);
 
-			// ignore this
 			$insert['item_id']			= $key;
 		
 			// if stat exist, then insert, else create and insert
@@ -255,6 +238,7 @@ class Model_DbTable_User_Meal extends Core_Db{
 	 * @param mixed $meal_id
 	 * @param mixed $eat_type
 	 * @return void
+	 */
 	public function setDefaultMeal2($id,$meal_id,$eat_type,$user_meal_id,$num_items){
 	
 		$item = new Model_DbTable_Item;
@@ -329,6 +313,5 @@ class Model_DbTable_User_Meal extends Core_Db{
 		}	
 		
 	}
-	 */
 	
 }

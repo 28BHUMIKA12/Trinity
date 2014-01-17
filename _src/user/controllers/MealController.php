@@ -50,8 +50,8 @@ class User_MealController extends Core_Trainee{
 			$this->view->c = $p['code'];
 	
 			$this->view->user_meal_data = $this->user_meal->fetchRow(
-				"code='".$p['code']."' and user_id='".$this->auth->id."'");					
-			//echo "code='".$p['code']."'";
+				"code='".$p['code']."' and user_id='".$this->auth->id."'"
+			);					
 			
 		}
 		
@@ -119,9 +119,15 @@ class User_MealController extends Core_Trainee{
 		
 		$id = $p['edit_plan'];
 		
-		$update['item_id'] = $p['edit_pop_sub_item_'.$id];
-		$update['item_stats_id'] = $p['edit_pop_sub_item_qty_'.$id];
-		$update['eat_type'] = $p['edit_pop_t_'.$id];
+		// get item record
+		$meal_item = $this->user_meal_items->fetchRow("id='".$id."'");					
+		
+		// get meal plan record
+		$meal_plan = $this->user_meal->fetchRow("id='".$meal_item->user_meal_id."'");					
+		
+		$update['item_id'] 			= $p['edit_pop_sub_item_'.$id];
+		$update['item_stats_id'] 	= $p['edit_pop_sub_item_qty_'.$id];
+		$update['eat_type'] 		= $p['edit_pop_t_'.$id];
 		
 		// if custom
 		if($update['item_stats_id'] == 'custom'){
@@ -139,16 +145,16 @@ class User_MealController extends Core_Trainee{
 			else{
 				$result = $this->item_stats->fetchRow("item_id='".$update['item_id']."'");
 				
-				$insert['item_id'] = $update['item_id'];
-				$insert['weight'] = $custom;
-				$insert['weight_unit'] = $result['weight_unit'];
-				$insert['grams'] = ($result->grams/$result->weight) * $custom;
-				$insert['calories'] = ($result->calories/$result->weight) * $custom;
-				$insert['protein'] = ($result->protein/$result->weight) * $custom;
-				$insert['fat'] = ($result->fat/$result->weight) * $custom;
-				$insert['carbs'] = ($result->carbs/$result->weight) * $custom;
-				$insert['fiber'] = ($result->fiber/$result->weight) * $custom;
-				$insert['is_custom'] = 1;
+				$insert['item_id'] 		= $update['item_id'];
+				$insert['weight'] 		= $custom;
+				$insert['weight_unit'] 	= $result['weight_unit'];
+				$insert['grams'] 		= ($result->grams/$result->weight) * $custom;
+				$insert['calories'] 	= ($result->calories/$result->weight) * $custom;
+				$insert['protein'] 		= ($result->protein/$result->weight) * $custom;
+				$insert['fat'] 			= ($result->fat/$result->weight) * $custom;
+				$insert['carbs'] 		= ($result->carbs/$result->weight) * $custom;
+				$insert['fiber'] 		= ($result->fiber/$result->weight) * $custom;
+				$insert['is_custom'] 	= 1;
 				
 				$update['item_stats_id'] = $this->item_stats->doCreate($insert);
 				$this->user_meal_items->doUpdate($update,"id='{$id}'");						
@@ -160,8 +166,8 @@ class User_MealController extends Core_Trainee{
 			$this->user_meal_items->doUpdate($update,"id='{$id}'");		
 		}
 		
-		
-		$this->_redirect('user/meal/plan');
+		// get the plan details
+		$this->_redirect('user/meal/plan/code/'.$meal_plan->code);
 	}
 	
 	/**
@@ -176,6 +182,9 @@ class User_MealController extends Core_Trainee{
 		
 		$id = $p['add_plan'];
 		
+		// get meal plan record
+		$meal_plan = $this->user_meal->fetchRow("id='".$p['user_meal_id']."'");					
+
 		$insert['user_meal_id'] = $p['user_meal_id'];
 		$insert['meal_id'] = $p['meal_id'];
 		$insert['item_id'] = $p['add_pop_sub_item_'.$id];
@@ -184,7 +193,7 @@ class User_MealController extends Core_Trainee{
 		
 		$this->user_meal_items->doCreate($insert);
 		
-		$this->_redirect('user/meal/plan');
+		$this->_redirect('user/meal/plan/code/'.$meal_plan->code);
 	}
 	
 	/**

@@ -19,11 +19,11 @@
 						<div class="control-group">
 							<div class="controls">						
 								<div class="fileupload fileupload-new" data-provides="fileupload">
-									<div class="fileupload-new thumbnail" style="width: 150px; height: 150px;">
+									<div class="fileupload-new thumbnail" style="width: 120px; height: 120px;">
 										<img src='<?=HTTP.WWW_ROOT?>/uploads/<?=$this->user->pic?>'>
 									</div>
 									<div class="fileupload-preview fileupload-exists thumbnail" 
-										style="max-width: 150px; max-height: 150px; line-height: 20px;">
+										style="max-width: 120px; max-height: 120px; line-height: 20px;">
 									</div>
 									<div>
 										<span class="btn btn-file btn-mini">
@@ -47,7 +47,7 @@
 					</div>
 					<div class='span4'>
 					
-						<p><input type="text" name='email' required placeholder="Email … " value="<?=$this->user->email?>"></p>								<p>
+						<p><input type="text" name='email' class='span12' required placeholder="Email … " value="<?=$this->user->email?>"></p>								<p>
 							<?php
 							$gender = array('Male', 'Female');
 							$Male = $Female = '';
@@ -70,11 +70,11 @@
 
 					</div>
 					<div class='span4'>
-						<p><input type="text" name='first_name' required placeholder="First Name … " value="<?=$this->user->first_name?>"></p>			
-						<p><input type="text" name='last_name' required placeholder="Last Name … " value="<?=$this->user->last_name?>"></p>
+						<p><input type="text" name='first_name' class='span12' required placeholder="First Name … " value="<?=$this->user->first_name?>"></p>			
+						<p><input type="text" name='last_name' class='span12' required placeholder="Last Name … " value="<?=$this->user->last_name?>"></p>
 					
-						<p><input type="text" name='mobile' required placeholder="Mobile … " value="<?=$this->user->mobile?>"></p>
-						<p><input type="text" name='qualification' required placeholder="Qualification … " value="<?=$this->user->qualification?>"></p>						
+						<p><input type="text" name='mobile' class='span12' required placeholder="Mobile … " value="<?=$this->user->mobile?>"></p>
+						<p><input type="text" name='qualification' class='span12' required placeholder="Qualification … " value="<?=$this->user->qualification?>"></p>						
 					</div>
 					
 				</div>		

@@ -37,6 +37,8 @@ class User_QuizController extends Core_Trainee{
 		
 		// get old scores
 		$this->view->score = $this->quiz_played->fetchAll("user_id='".$this->auth->id."'");
+		$this->view->quiz = $this->quiz->fetchRow("user_id='".$this->auth->id."'");
+
 		$count = count($this->view->score);		
 		$update['is_stopped'] = 0;
 		
