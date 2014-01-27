@@ -54,7 +54,7 @@ class CronController extends Zend_Controller_Action{
 		    $mail->setFrom('narwalsandeep@gmail.com', 'trinity sandbox');
 		    $mail->addTo('narwalsandeep@gmail.com', 'Me');
 		    $mail->setSubject('trinity sandbox');
-		    $mail->send();
+		    //$mail->send();
 
 		}	
 		
