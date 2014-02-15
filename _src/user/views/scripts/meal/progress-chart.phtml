@@ -16,16 +16,17 @@ function drawVisualization() {
     var data = google.visualization.arrayToDataTable([
         ['Day', 'Actual Calories', 'Target Calories','Weight in lbs'],
         <?php
+        $i = 1;
         foreach($this->user_weight_data as $key=>$value){
-	        echo "['{$value->day}',{$value->actual_cals},{$value->target_cals},{$value->weight_lbs}],";
-        	
+	        echo "['{$i}',{$value->actual_cals},{$value->target_cals},{$value->weight_lbs}],";
+        	$i++;
         }
         ?>
     ]);
     
     var options = {
         legend:{position:'bottom'},
-        title: 'Last 30 Days Calorie Consumption & Weight Chart',
+        title: 'Last 30 Days Calorie Consumption & Weight Chart. 30th Day is today!',
         hAxis: { minValue:1,title: "Day"},
         vAxis: {0:{ title: "Day"},1:{ title: "Weight"}},
         vAxes:[

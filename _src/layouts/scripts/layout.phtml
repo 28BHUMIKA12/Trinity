@@ -171,9 +171,11 @@ if(Zend_Auth::getInstance()->hasIdentity()){
 				<li class="divider-vertical"></li>
 				<li><a href="<?=HTTP.WWW_ROOT?>/user/quiz/home">My Brain Exercises</a></li>
 				<li class="divider-vertical"></li>
-				<li><a href='' data-content="<form action='<?=HTTP.WWW_ROOT?>/user/meal/progress-chart' method='post'>
+				<li><a href="<?=HTTP.WWW_ROOT?>/user/meal/progress-chart">Progress Chart</a></li>
+				<!-- <li><a href='' data-content="<form action='<?=HTTP.WWW_ROOT?>/user/meal/progress-chart' method='post'>
 						<input name='weight_lbs' type='text' value='<?=$Auth->weight_lbs?>'  class='input-medium input-mini' placeholder='weight in lbs'><button type='submit' class='btn pull-right btn-mini btn-primary'>Go</button>
 						</form>" class='progress_chart_popover' data-title='Enter Your Current Weight in lbs' data-toggle='modal' role='button'  >Progress Chart</a></li>		      
+				-->
 				<li class="divider-vertical"></li>
 				<li><a href="<?=HTTP.WWW_ROOT?>/user/meal/seven-days-out">7 Days Out</a></li>
 				<li class="divider-vertical"></li>
